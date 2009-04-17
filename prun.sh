@@ -1,0 +1,1 @@
+perl -Isrc/perl/lib "$@"

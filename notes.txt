@@ -1,0 +1,250 @@
+They're Not Equal, How the <<explative>> do you expect me to find a match!
+====================
+
+Fuzzy Matching, That's how
+----------------------------------------
+
+- Partial Matching
+
+- Phonetic Encoding Algorithms
+
+- String Similarity Metrics
+
+
+How'd we Get Here?
+----------------------------------------
+
+ - Record Linkage (duplicate detection)
+
+   - US Census Bureau - William Winkler [not The Fonz]
+
+   - Sent 2 people into the field at different times,
+     loaded data into those new fangled auto-data-processor-thingies
+
+     - mis-spellings
+
+     - typos during transcription
+
+
+Partial Matching
+----------------------------------------
+
+ - 'False' Fuzzyness: prefix, suffix, infix, sql's % operator:
+
+    SELECT * FROM TABLE WHERE FIELD = '%foo%';
+
+ - Bi- and Tri-grams (less 'false')
+
+    foobar => [foo, oob, oba, bar]
+
+ - Properties:
+
+   - Indexable
+
+   - Limited degrees of fuzzyness, it's [mostly] fixed
+
+   - Not terribly interesting
+
+
+
+Phonetic Encoding Algorithms
+----------------------------------------
+
+  - Soundex
+
+  - NYSIIS
+
+  - Double Metaphone
+
+  - Properties:
+
+    - a 'hash', deterministic loss of information
+
+    - indexable
+
+    - fixed fuzzyness, one degree
+
+
+Detail / Example: Soundex
+----------------------------------------
+
+    - Robert Russell and Margaret Odell 
+
+    - patented in 1918, 1922!
+
+    - heavy use by US Census Bureau from 1890 through 1920 
+      (according to wikipedia)
+
+    - show some examples, even 'live'?
+
+Detail / Example: NYSIIS
+----------------------------------------
+
+    - New York State Immunization Information System, circa 1970
+
+    - 2.7% better than Soundex
+
+    - Targeted at names
+
+    - show some examples, even 'live'?
+
+
+Detail / Example: Double Metaphone
+----------------------------------------
+
+    - Lawrence Philips, derived from Metaphone
+
+    - Can return both a primary and alternate encoding
+
+    - Helps account for irregularities: English, Slavic, Germanic,
+      Celtic, Greek, French, Italian, Spanish...(according to Wikipedia)
+
+    - show some examples, even 'live'?
+
+
+US Census Name Files
+----------------------------------------
+
+ - http://www.census.gov/genealogy/names/names_files.html
+
+ - (Name, Frequency, Cumulative Frequencey, Rank)
+
+ - Useless Fact: 1% of the unique names cover 50% of the US population
+
+ - Useless Fact: AALDERINK is the least frequent last name, go figure
+
+ - No so Useless Fact: SMITH _is_ the most frequent name
+
+US Census Name Files - Can we Have a Looksee?
+----------------------------------------
+
+ - dist.all.last:
+
+    SMITH          1.006  1.006      1
+    JOHNSON        0.810  1.816      2
+    WILLIAMS       0.699  2.515      3
+
+ - dist.male.first
+
+    JAMES          3.318  3.318      1
+    JOHN           3.271  6.589      2
+    ROBERT         3.143  9.732      3
+
+ - dist.female.first
+
+    MARY           2.629  2.629      1
+    PATRICIA       1.073  3.702      2
+    LINDA          1.035  4.736      3
+
+
+Phonetic Distributions for Name Files
+----------------------------------------
+
+ - How do our algorithms stack up?
+
+   - Last Names: 88,799
+
+   - Soundex:     4,599 =>  1/20th
+
+   - Metaphone:  18,317 =>  1/5th
+
+   - NYSIIS:     31,149 =>  1/3rd
+
+
+
+Fuzzy String Comparisons
+----------------------------------------
+
+  - Edit Distance and variants
+
+    - Levenshtein, Wu-Manber, Jaro-Winkler, and others
+
+  - used in spell-checkers, quick search, fuzzy-matching
+
+  - Properties:
+
+    - Honest, real fuzzieness (whatever that means :)
+
+    - Measurable fuzzyness
+
+       - number of edits, pct similarity, you can set the dial
+
+    - Not indexable (ask me later)
+
+
+Edit Distance and variants
+----------------------------------------
+
+ - Levenshtein distance
+
+   number of operations needed to transform one string into the other
+     insertion, deletion or substitution
+
+   - [[Example / Demonstration / Detailed Walkthrough]]
+
+ - Sun Wu - Udi Manber (VP of Engineering @ Google) 
+
+      http://en.wikipedia.org/wiki/Bitap_algorithm
+
+    - used in [agrep] 
+
+    - aka bitap 
+
+ - Jaro-Winkler
+
+    http://en.wikipedia.org/wiki/Jaro-Winkler
+
+ - Text-Brew
+
+   - By Chris Brew
+
+   - You can give a weight to the edits (scoring)
+
+   - You can compute the actual edits (though it's asymmetrical)
+
+   - [[Example / Demonstration / Detailed Walkthrough]]
+
+
+Edit Distance and Indexing
+----------------------------------------
+
+ - Method B: You're Me
+
+   - given a threshold, T (say 70%)
+
+   - given an input string, length L (say 10)
+
+   - there must be a minimum shared substring of length S
+
+   - 3 edits, worst possible partitioning is:
+
+     aa_aa_aa_a
+
+   - Therefore any string of length 10 must share at least 3 bi-grams
+     with any string that it is within 3 edits of.
+
+   - You can use this information to index a data set
+
+   - For all of our last-names (~600k), this index fits into a 256M
+     JVM (T=67%, L>2)
+
+ - Method A: You're Peter Norvig
+
+   - pre-generate all the possible strings that are within N edits of
+     a given input string
+
+   - RAM is cheap, treat it that way
+
+References
+----------------------------------------
+
+ - http://en.wikipedia.org/wiki/Soundex
+ - http://en.wikipedia.org/wiki/New_York_State_Identification_and_Intelligence_System
+ - http://en.wikipedia.org/wiki/Double_Metaphone
+ - http://en.wikipedia.org/wiki/Levenshtein_distance
+ - http://en.wikipedia.org/wiki/Bitap_algorithm
+ - http://en.wikipedia.org/wiki/Jaro-Winkler
+ - http://search.cpan.org/~kcivey/Text-Brew-0.02/lib/Text/Brew.pm
+
+
+

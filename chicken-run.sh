@@ -1,0 +1,1 @@
+csi -I src/chicken "$@"
