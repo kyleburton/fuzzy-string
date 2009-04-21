@@ -21,204 +21,195 @@ use constant None	=> [];
 
 sub _best {
 
-	my ($sub_move,$ins_move,$del_move,$c1,$c2)=@_;
+  my ($sub_move,$ins_move,$del_move,$c1,$c2)=@_;
 
-	my ($increment,$substOrMatchMoveType,$insertMoveType,$deleteMoveType,$traceBackForSubstOrMatch,$traceBackForInsert,$traceBackForDelete);
+  my ($increment,$substOrMatchMoveType,$insertMoveType,$deleteMoveType,$traceBackForSubstOrMatch,$traceBackForInsert,$traceBackForDelete);
 
-	($increment,$substOrMatchMoveType,$traceBackForSubstOrMatch)=@$sub_move;
-	my $cost_with_sub=$increment+$traceBackForSubstOrMatch->[0];
+  ($increment,$substOrMatchMoveType,$traceBackForSubstOrMatch)=@$sub_move;
+  my $cost_with_sub=$increment+$traceBackForSubstOrMatch->[0];
 
-	($increment,$insertMoveType,$traceBackForInsert)=@$ins_move;
-	my $cost_with_ins=$increment+$traceBackForInsert->[0];
+  ($increment,$insertMoveType,$traceBackForInsert)=@$ins_move;
+  my $cost_with_ins=$increment+$traceBackForInsert->[0];
 
-	($increment,$deleteMoveType,$traceBackForDelete)=@$del_move;
-	my $cost_with_del=$increment+$traceBackForDelete->[0];
+  ($increment,$deleteMoveType,$traceBackForDelete)=@$del_move;
+  my $cost_with_del=$increment+$traceBackForDelete->[0];
 
-	my $best_cost=$cost_with_sub;
-	my $moveType=$substOrMatchMoveType;
-	my $traceBack=$traceBackForSubstOrMatch;
+  my $best_cost=$cost_with_sub;
+  my $moveType=$substOrMatchMoveType;
+  my $traceBack=$traceBackForSubstOrMatch;
 
-	if ($cost_with_ins < $best_cost) {
+  if ($cost_with_ins < $best_cost) {
 
-		$best_cost=$cost_with_ins;
-		$moveType=$insertMoveType;
-		$traceBack=$traceBackForInsert;
-	}
+    $best_cost=$cost_with_ins;
+    $moveType=$insertMoveType;
+    $traceBack=$traceBackForInsert;
+  }
 
-	if ($cost_with_del < $best_cost) {
+  if ($cost_with_del < $best_cost) {
 
-		$best_cost=$cost_with_del;
-		$moveType=$deleteMoveType;
-		$traceBack=$traceBackForDelete;
-	}
+    $best_cost=$cost_with_del;
+    $moveType=$deleteMoveType;
+    $traceBack=$traceBackForDelete;
+  }
 
-        # is this a bug? what if matching has a non-zero cost?
-	if ($best_cost == $traceBack->[0]) {$moveType=MATCH}
-	return [$best_cost,$moveType,$traceBack];
+  # is this a bug? what if matching has a non-zero cost?
+  if ($best_cost == $traceBack->[0]) {
+    $moveType=MATCH;
+  }
+  return [$best_cost,$moveType,$traceBack];
 }
 
 sub _edit_path {
 
-	my ($string1,$string2,$refc)=@_;
+  my ($string1,$string2,$refc)=@_;
 
-	my $m=length($string1);
-	my $n=length($string2);
+  my $m=length($string1);
+  my $n=length($string2);
 
-	my ($matchCost,$insCost,$delCost,$substCost)=@$refc;
-	my @d;
+  my ($matchCost,$insCost,$delCost,$substCost)=@$refc;
+  my @d;
 
-	$d[0][0]=[0,INITIAL,None];
+  $d[0][0]=[0,INITIAL,None];
 
-	foreach my $i (0 .. $m-1) {
+  foreach my $i (0 .. $m-1) {
 
-		my $sofar= $d[$i][0][0];
+    my $sofar= $d[$i][0][0];
 
-		#		cost		move	tb
-		$d[$i+1][0]=[$sofar+$delCost, 	DEL , 	$d[$i][0]];
-	}
+    #		cost		move	tb
+    $d[$i+1][0]=[$sofar+$delCost, 	DEL , 	$d[$i][0]];
+  }
 
-	foreach my $j (0 .. $n-1) {
+  foreach my $j (0 .. $n-1) {
 
-		my $sofar= $d[0][$j][0];
+    my $sofar= $d[0][$j][0];
 
-		#		cost		move	tb
-		$d[0][$j+1]=[$sofar+$insCost, 	INS ,	$d[0][$j]];
-	}
+    #		cost		move	tb
+    $d[0][$j+1]=[$sofar+$insCost, 	INS ,	$d[0][$j]];
+  }
 
-	foreach my $i (0 .. $m-1) {
+  foreach my $i (0 .. $m-1) {
 
-		my $string1_i=substr($string1,$i,1);
+    my $string1_i=substr($string1,$i,1);
 
-		foreach my $j (0 .. $n-1) {
+    foreach my $j (0 .. $n-1) {
 
-			my $string2_i=substr($string2,$j,1);
-			my $subst;
+      my $string2_i=substr($string2,$j,1);
+      my $subst;
 
-			if ($string1_i eq $string2_i) {
+      if ($string1_i eq $string2_i) {
 
-				$subst=$matchCost;
+        $subst=$matchCost;
 
-			} else {
+      } else {
 
-				$subst=$substCost;
-			}
+        $subst=$substCost;
+      }
 
-			#			cost	move	tb
-			$d[$i+1][$j+1]=_best([$subst,	SUBST ,	$d[$i][$j]],
-					     [$insCost,	INS ,	$d[$i+1][$j]],
-					     [$delCost, DEL ,	$d[$i][$j+1]]);
-		}
-	}
+      #			cost	move	tb
+      $d[$i+1][$j+1]=_best([$subst,	SUBST ,	$d[$i][$j]],
+                           [$insCost,	INS ,	$d[$i+1][$j]],
+                           [$delCost, DEL ,	$d[$i][$j+1]]);
+    }
+  }
 
-        if ( $DEBUG ) {
-          print STDERR "Move Matrix:\n";
-          print "\t\t";
-          foreach my $ch (reverse split //, $string2) {
-            print $ch,"\t";
-          }
-          print "\n";
-          for ( my $xx = $m; $xx >= 0; --$xx ) {
-            print "";
-            print( ($xx!=$m) ? substr($string1,$xx,1) : "" );
-            for ( my $yy = $n; $yy >= 0; --$yy ) {
-              my($cost,$move,$traceBack) = @{$d[$xx][$yy]};
-              print "\t$cost,", substr($move,0,1);
-            }
-            print "\n";
-          }
-        }
+  if ( $DEBUG ) {
+    print STDERR "Move Matrix:\n";
+    print "\t\t";
+    foreach my $ch (reverse split //, $string2) {
+      print $ch,"\t";
+    }
+    print "\n";
+    for ( my $xx = $m; $xx >= 0; --$xx ) {
+      print "";
+      print( ($xx!=$m) ? substr($string1,$xx,1) : "" );
+      for ( my $yy = $n; $yy >= 0; --$yy ) {
+        my($cost,$move,$traceBack) = @{$d[$xx][$yy]};
+        print "\t$cost,", substr($move,0,1);
+      }
+      print "\n";
+    }
+  }
 
-	return $d[$m][$n];
+  return $d[$m][$n];
 }
 
 sub distance {
 
-	my ($string1,$string2,$optional_ref)=@_;
-	my $output;
-	my $cost;
+  my ($string1,$string2,$optional_ref)=@_;
+  my $output;
+  my $cost;
 
-	if ($optional_ref) {
+  if ($optional_ref) {
+    if (ref($optional_ref) ne "HASH") {
+      warn "Text::Brew: options not well formed, using default";
+    } 
+    else {
+      foreach my $key (keys %$optional_ref) {
+        if ($key eq "-cost") {
+          $cost=$$optional_ref{'-cost'};
+          if (ref($cost) ne "ARRAY") {
+            require Carp;
+            Carp::croak("Text::Brew: -cost option requires an array");
+          } else {
+            if (@$cost < 4) {
+              warn "Text::Brew: array cost not well formed, using default";
+              $cost=undef;
+            }
+          }
+        } 
+        elsif ($key eq "-output") {
+          $output=$$optional_ref{'-output'};
+        } 
+        else {
+          require Carp;
+          Carp::croak("Text::Brew: $key is not a valid option");
+        }
+      }
+    }
+  }
 
-		if (ref($optional_ref) ne "HASH") {
+  $cost ||= [0,1,1,1];
+  $output='both' if (!defined $output);
 
-			warn "Text::Brew: options not well formed, using default";
+  if ($output eq 'both') {
 
-		} else {
+    my $tb=_edit_path($string1,$string2,$cost);
+    my $distance=$tb->[0];
+    my $arrayref_edits;
 
-			foreach my $key (keys %$optional_ref) {
+    while (defined $tb->[0]) {
 
-				if ($key eq "-cost") {
+      unshift @$arrayref_edits,$tb->[1];
+      $tb=$tb->[2];	
+    }
 
-					$cost=$$optional_ref{'-cost'};
-					if (ref($cost) ne "ARRAY") {
+    return $distance,$arrayref_edits;
 
-           					require Carp;
-				      		Carp::croak("Text::Brew: -cost option requires an array");
+  } elsif ($output eq 'distance') {
 
-					} else {
+    my $tb=_edit_path($string1,$string2,$cost);
+    my $distance=$tb->[0];
 
-						if (@$cost < 4) {
+    return $distance;
 
-							warn "Text::Brew: array cost not well formed, using default";
-							$cost=undef;
-						}
-					}
+  } elsif ($output eq 'edits') {
 
-				} elsif ($key eq "-output") {
+    my $tb=_edit_path($string1,$string2,$cost);
+    my $arrayref_edits;
 
-					$output=$$optional_ref{'-output'};
+    while (defined $tb->[0]) {
 
-				} else {
+      unshift @$arrayref_edits,$tb->[1];
+      $tb=$tb->[2];	
+    }
 
-					require Carp;
-					Carp::croak("Text::Brew: $key is not a valid option");
-				}
-			}
-		}
-	}
+    return $arrayref_edits;
 
-	$cost ||= [0,1,1,1];
-	$output='both' if (!defined $output);
+  } else {
 
-	if ($output eq 'both') {
-
-		my $tb=_edit_path($string1,$string2,$cost);
-		my $distance=$tb->[0];
-		my $arrayref_edits;
-
-		while (defined $tb->[0]) {
-
-			unshift @$arrayref_edits,$tb->[1];
-			$tb=$tb->[2];	
-		}
-
-		return $distance,$arrayref_edits;
-
-	} elsif ($output eq 'distance') {
-
-		my $tb=_edit_path($string1,$string2,$cost);
-		my $distance=$tb->[0];
-
-		return $distance;
-
-	} elsif ($output eq 'edits') {
-
-		my $tb=_edit_path($string1,$string2,$cost);
-		my $arrayref_edits;
-
-		while (defined $tb->[0]) {
-
-			unshift @$arrayref_edits,$tb->[1];
-			$tb=$tb->[2];	
-		}
-
-		return $arrayref_edits;
-
-	} else {
-
-		require Carp;
-		Carp::croak("Text::Brew: -output option must be 'distance' or 'both' or 'edits', not $output");
-	}
+    require Carp;
+    Carp::croak("Text::Brew: -output option must be 'distance' or 'both' or 'edits', not $output");
+  }
 }
 
 1;

@@ -27,3 +27,4 @@ words = ["De Morgan", "D'Morgun", "D'Morgun", "Demorgyn", "De Murgen", "Dy Moreg
 words.each {|word|
   puts "#{target} vs #{word} => #{edit_distance(target,word)} => #{edit_distance_sim(target,word)}"
 }
+
