@@ -1,0 +1,16 @@
+<h1>Editing atest</h1>
+
+<% form_for(@atest) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :aprop %><br />
+    <%= f.text_field :aprop %>
+  </p>
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @atest %> |
+<%= link_to 'Back', atests_path %>

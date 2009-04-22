@@ -51,6 +51,8 @@ class Edist
     }
 
     print_matrix(matrix)
+
+    [ matrix[-1][-1][:cost], matrix ]
   end
 
   def cell_to_s(cell)

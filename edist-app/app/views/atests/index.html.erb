@@ -1,0 +1,20 @@
+<h1>Listing atests</h1>
+
+<table>
+  <tr>
+    <th>Aprop</th>
+  </tr>
+
+<% @atests.each do |atest| %>
+  <tr>
+    <td><%=h atest.aprop %></td>
+    <td><%= link_to 'Show', atest %></td>
+    <td><%= link_to 'Edit', edit_atest_path(atest) %></td>
+    <td><%= link_to 'Destroy', atest, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New atest', new_atest_path %>

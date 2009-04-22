@@ -1,0 +1,15 @@
+<h1>"<%= @left_string %>" vs "<%= @right_string %>"</h1>
+
+<table border="1" cellspacing="2" cellpadding="2">
+  <% @matrix.each_with_index { |row,row_idx| -%>
+    <tr>
+      <% row.each_with_index { |cell,cell_idx| -%>
+        <td><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %></td>
+      <% } -%>
+    </tr>
+  <% } -%>
+</table>
+
+<br/>
+
+<%= render :partial => 'form' %>
