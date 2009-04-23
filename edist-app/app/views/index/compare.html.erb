@@ -1,4 +1,4 @@
-<h1>"<%= @left_string %>" vs "<%= @right_string %>"</h1>
+<h1>"<%= @left_string %>" vs "<%= @right_string %>" : <%= @edits %> : <%= sprintf "%2.1f", @edist_score * 100 %>% </h1>
 
 <table border="1" cellspacing="2" cellpadding="2">
   <% @matrix.each_with_index { |row,row_idx| -%>
@@ -10,6 +10,13 @@
   <% } -%>
 </table>
 
+<br/>
+<div class="<%= @left_string.soundex == @right_string.soundex ? 'hit' : 'miss' %>">SOUNDEX: <%= @left_string.soundex %> vs <%= @right_string.soundex %></div>
+<div class="<%= @left_string.nysiis == @right_string.nysiis ? 'hit' : 'miss' %>">NYSIIS: <%= @left_string.nysiis %> vs <%= @right_string.nysiis %></div>
+<div class="<%= @left_string.double_metaphone == @right_string.double_metaphone ? 'hit' : 'miss' %>">DOUBLE METAPHONE: <%= @left_string.double_metaphone %> vs <%= @right_string.double_metaphone %></div>
+
+
+<br/>
 <br/>
 
 <%= render :partial => 'form' %>

@@ -3,3 +3,17 @@
   Right String: <input type="text" name="right_string" value="<%= @right_string %>"/>  <br/>
   <%= submit_tag "compare" %>
 <% } -%>
+
+<%
+  target = "De Morgan"
+  words = ["De Morgan", "D'Morgan", "D'Morgun", "Demorgyn", 
+           "De Murgen", "Dy Moregan", "Dy Murgan", "Da Murgan", 
+           "Da Morgan", "Da Myrgn", "Domorgensteinopolos"];
+%>
+
+<ul>
+<% words.each {|word| 
+%>
+  <li><%= link_to "#{target} vs #{word}", :controller => 'index', :action => 'compare', :left_string => target, :right_string => word %></li>
+<% } %>
+</ul>
