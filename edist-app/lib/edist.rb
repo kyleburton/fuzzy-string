@@ -41,12 +41,14 @@ class Edist
         curr_cost = left_cost if left_cost < curr_cost
         curr_cost = up_cost   if up_cost < curr_cost
 
+        is_hit = true
         if left_ch != right_ch
           curr_cost + 1
+          is_hit = false
         end
         
         # total is base + min of [up,left,up-left]
-        row[col_idx] ||= { :cost => curr_cost, :left => left_ch, :right => right_ch }
+        row[col_idx] = { :cost => curr_cost, :left => left_ch, :right => right_ch, :hit=>is_hit }
       }
     }
 

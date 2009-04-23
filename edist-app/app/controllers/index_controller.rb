@@ -9,6 +9,6 @@ class IndexController < ApplicationController
     edist = Edist.new
     @left_string  = params[:left_string]
     @right_string = params[:right_string]
-    @matrix = edist.distance(@left_string,@right_string)
+    score, @matrix = edist.distance(@left_string,@right_string)
   end
 end

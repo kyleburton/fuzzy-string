@@ -4,7 +4,7 @@
   <% @matrix.each_with_index { |row,row_idx| -%>
     <tr>
       <% row.each_with_index { |cell,cell_idx| -%>
-        <td><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %></td>
+        <td class="<%= cell[:hit] ? 'hit' : 'miss' %>"><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %></td>
       <% } -%>
     </tr>
   <% } -%>
