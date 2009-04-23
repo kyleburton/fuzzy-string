@@ -158,7 +158,7 @@ class Brew
       c = cell[:cost]  || '0'
       l = cell[:left]  || '~'
       r = cell[:right] || '~'
-      "{c:#{c};l:#{l};r:#{r};tb:#{cell[:tb].inspect}"
+      "{c:#{c};l:#{l};r:#{r};tb:#{cell[:tb].inspect}}"
     else
       "{c:0;l:~;r:~}"
     end
