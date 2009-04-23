@@ -14,7 +14,7 @@ class Edist
     # initialize the top row of the grid
     ctr = 1
     matrix[0] = Array.new right_chars.size + 1
-    matrix[0][0] = { :cost => 0, :left => nil, :right => nil }
+    matrix[0][0] = { :cost => 0, :left => nil, :right => nil, :hit => true }
     left_chars.each_with_index { |ch,idx|
       matrix[idx+1] = Array.new right_chars.size + 1
       matrix[idx+1][0] = { :cost => ctr, :left => ch, :right => nil }
@@ -41,12 +41,14 @@ class Edist
         curr_cost = left_cost if left_cost < curr_cost
         curr_cost = up_cost   if up_cost < curr_cost
 
+        is_hit = true
         if left_ch != right_ch
           curr_cost + 1
+          is_hit = false
         end
         
         # total is base + min of [up,left,up-left]
-        row[col_idx] ||= { :cost => curr_cost, :left => left_ch, :right => right_ch }
+        row[col_idx] = { :cost => curr_cost, :left => left_ch, :right => right_ch, :hit=>is_hit }
       }
     }
 
