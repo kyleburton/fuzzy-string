@@ -22,19 +22,20 @@ sub runBrew {
   print "$a\t$b\t$dist\t",join(",",map { $map{$_} } @$edits),"\t$score\n";
 }}
 
-
-my @lines = `cat data/test-cases.tab`;
-shift @lines;
-chomp @lines;
-print join("\t",qw(LEFT RIGHT DISTANCE EDIT_PATH ORG_SIM_SCORE)),"\n";
-foreach my $line (@lines) {
-  my($left,$right,$score) = split /\t/, $line;
-  runBrew($left,$right,$score);
+if(0) {
+  my @lines = `cat data/test-cases.tab`;
+  shift @lines;
+  chomp @lines;
+  print join("\t",qw(LEFT RIGHT DISTANCE EDIT_PATH ORG_SIM_SCORE)),"\n";
+  foreach my $line (@lines) {
+    my($left,$right,$score) = split /\t/, $line;
+    runBrew($left,$right,$score);
+  }
 }
 
-#my($a,$b) = ('BRYN','RESTAURANT');
-#runBrew($a,$b);
-#runBrew($b,$a);
+my($a,$b) = ('BRYN','RESTAURANT');
+runBrew($a,$b);
+runBrew($b,$a);
 
 
 1;

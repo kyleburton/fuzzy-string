@@ -10,11 +10,20 @@ MAT     = 'MAT'
 
 class Cost
 
-  def initialize(match,insert,delete,subst)
-    @match  = match  || 0.0
-    @insert = insert || 1.0
-    @delete = delete || 1.0
-    @subst  = subst  || 2.0
+  def initialize(initial,match,insert,delete,subst)
+    @initial = initial || 0.0
+    @match   = match  || 0.0
+    @insert  = insert || 1.0
+    @delete  = delete || 1.0
+    @subst   = subst  || 2.0
+  end
+
+  def initial
+    @initial
+  end
+
+  def initial=(val)
+    @initial=val
   end
 
   def match
@@ -50,12 +59,7 @@ class Cost
   end
 
   def to_s
-    @match = match
-    @insert = insert
-    @delete = delete
-    @subst = subst
-
-    "Cost{#{self.hash}}(match=#{@match};insert=#{@insert};delete=#{@delete};subst=#{@subst})"
+    "Cost{#{self.hash}}(initial=#{@initial};match=#{@match};insert=#{@insert};delete=#{@delete};subst=#{@subst})"
   end
 
 end
@@ -73,13 +77,8 @@ class Brew
   # support providing access to the internal matrix
   #
   def distance(left,right,cost_config={})
-    @cost = Cost.new(cost_config[:match], cost_config[:insert], cost_config[:delete], cost_config[:subst])
-    puts "cost=#{@cost}"
+    @cost = Cost.new(cost_config[:initial],cost_config[:match], cost_config[:insert], cost_config[:delete], cost_config[:subst])
 
-    if left.size < right.size
-      left, right = right, left
-    end
-    
     left_chars  = left.split //
     right_chars = right.split //
     matrix = Array.new left_chars.size + 1
@@ -93,7 +92,7 @@ class Brew
     # this via an array ref, this will use an (x,y) coordinate
     ctr = @cost.delete
     matrix[0] = Array.new right_chars.size + 1
-    matrix[0][0] = { :cost => 0.0, :left => nil, :right => nil, :hit => true, :tb => [nil,nil] }
+    matrix[0][0] = { :cost => @cost.initial, :left => nil, :right => nil, :hit => true, :tb => [nil,nil] }
     left_chars.each_with_index { |ch,idx|
       matrix[idx+1] = Array.new right_chars.size + 1
       matrix[idx+1][0] = { :cost => ctr, :left => ch, :right => nil, :tb => [] }
@@ -180,4 +179,7 @@ end
 
 
 brew = Brew.new
-brew.distance("baby","bobby", :insert=>0.1, :delete => 3.0, :match => 0.0, :subst => 0.5)
+left,right = ARGV
+left = "baby" unless left
+right = "bobby" unless right
+brew.distance(left, right, :initial => 0.0, :insert=>0.1, :delete => 15.0, :match => 0.0, :subst => 1)
