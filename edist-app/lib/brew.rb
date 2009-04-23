@@ -91,21 +91,19 @@ class Brew
     # linking it back to the cheapest cell path it took to get to the
     # current cell.  The Perl implementatiothis is based off of does
     # this via an array ref, this will use an (x,y) coordinate
-    ctr = 1
+    ctr = @cost.delete
     matrix[0] = Array.new right_chars.size + 1
-    matrix[0][0] = { :cost => 0, :left => nil, :right => nil, :hit => true, :tb => [nil,nil] }
+    matrix[0][0] = { :cost => 0.0, :left => nil, :right => nil, :hit => true, :tb => [nil,nil] }
     left_chars.each_with_index { |ch,idx|
       matrix[idx+1] = Array.new right_chars.size + 1
-      ## TODO: cost should be DEL, not 1
       matrix[idx+1][0] = { :cost => ctr, :left => ch, :right => nil, :tb => [] }
-      ctr += 1
+      ctr += @cost.delete
     }
     
-    ctr = 1
+    ctr = @cost.insert
     right_chars.each_with_index { |ch,idx|
-      ## TODO: cost should be INS, not 1
       matrix[0][idx+1] = { :cost => ctr, :left => nil, :right => ch, :tb => [nil, nil] }
-      ctr += 1
+      ctr += @cost.insert
     }
 
     left_chars.each_with_index { |left_ch,left_idx|
@@ -114,29 +112,40 @@ class Brew
       right_chars.each_with_index { |right_ch,right_idx|
         col_idx = right_idx + 1
 
-        ## TODO: use the variable costs...
+        is_hit    = true
+        base_cost = 0
         if left_ch == right_ch
           ## use the match cost
+          base_cost = base_cost + @cost.match
+          is_hit = true
         else
           ## use the subst cost
-        end
-
-        base_cost = left_ch == right_ch ? 0 : 1
-        up_cost      = 1         + matrix[row_idx - 1][col_idx    ][:cost]
-        left_cost    = 1         + matrix[row_idx    ][col_idx - 1][:cost]
-        up_left_cost = base_cost + matrix[row_idx - 1][col_idx - 1][:cost]
-        curr_cost = up_left_cost
-        curr_cost = left_cost if left_cost < curr_cost
-        curr_cost = up_cost   if up_cost < curr_cost
-
-        is_hit = true
-        if left_ch != right_ch
-          curr_cost + 1
+          base_cost = base_cost + @cost.subst
           is_hit = false
         end
+
+        ## up means DEL
+        up_cost      = @cost.delete + matrix[row_idx - 1][col_idx    ][:cost]
+        ## left means INS cost
+        left_cost    = @cost.insert + matrix[row_idx    ][col_idx - 1][:cost]
+        ## up-left is subst cost
+        up_left_cost = base_cost    + matrix[row_idx - 1][col_idx - 1][:cost]
+
+        curr_cost = up_left_cost
+        tb = [row_idx-1, col_idx-1]
+        if left_cost < curr_cost
+          curr_cost = left_cost
+          tb = [row_idx, col_idx-1]
+        end
+
+        if up_cost < curr_cost
+          curr_cost = up_cost
+          tb = [row_idx-1, col_idx]
+        end
+
         
         # total is base + min of [up,left,up-left]
-        row[col_idx] = { :cost => curr_cost, :left => left_ch, :right => right_ch, :hit=>is_hit }
+        row[col_idx] = { :cost => curr_cost, :left => left_ch, :right => right_ch, :hit=>is_hit, :tb => tb }
       }
     }
 
@@ -150,7 +159,7 @@ class Brew
       c = cell[:cost]  || '0'
       l = cell[:left]  || '~'
       r = cell[:right] || '~'
-      "{c:#{c};l:#{l};r:#{r}}"
+      "{c:#{c};l:#{l};r:#{r};tb:#{cell[:tb].inspect}"
     else
       "{c:0;l:~;r:~}"
     end
@@ -171,4 +180,4 @@ end
 
 
 brew = Brew.new
-brew.distance("baby","bobby")
+brew.distance("baby","bobby", :insert=>0.1, :delete => 3.0, :match => 0.0, :subst => 0.5)
