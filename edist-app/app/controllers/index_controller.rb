@@ -16,5 +16,6 @@ class IndexController < ApplicationController
     len = @left_string.length
     len = @right_string.length if @right_string.length > len
     @edist_score = (len.to_f - @edits.to_f) / len.to_f
+    
   end
 end
