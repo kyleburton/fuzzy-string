@@ -1,0 +1,35 @@
+<H1>"<%= @left_string %>" vs "<%= @right_string %>" : <%= @score %> : <%= sprintf "%2.1f", @brew_score * 100 %>% </H1>
+
+<TABLE CLASS="brew" BORDER="1" CELLSPACING="2" CELLPADDING="2">
+  <% @matrix.each_with_index { |row,row_idx| -%>
+    <TR>
+      <% row.each_with_index { |cell,cell_idx|
+        css_class = ""
+        css_class += cell[:hit] ? 'hit' : 'miss'
+        css_class += cell[:path] ? ' brew_path' : ''
+      -%>
+        <TD CLASS="<%= css_class %>"><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %>:<%= cell[:action] %></TD>
+      <% } -%>
+    </TR>
+  <% } -%>
+</TABLE>
+
+<!--
+<H3> Traceback </H3>
+<UL>
+  <% @traceback.each { |tb| %>
+    <LI><%= tb.inspect %></LI>
+  <% } %>
+</UL>
+-->
+
+<BR/>
+<DIV CLASS="<%= @left_string.soundex == @right_string.soundex ? 'hit' : 'miss' %>">SOUNDEX: <%= @left_string.soundex %> vs <%= @right_string.soundex %></DIV>
+<DIV CLASS="<%= @left_string.nysiis == @right_string.nysiis ? 'hit' : 'miss' %>">NYSIIS: <%= @left_string.nysiis %> vs <%= @right_string.nysiis %></DIV>
+<DIV CLASS="<%= @left_string.double_metaphone[0] == @right_string.double_metaphone[0] ? 'hit' : 'miss' %>">DOUBLE METAPHONE: <%= @left_string.double_metaphone[0] %> vs <%= @right_string.double_metaphone[0] %></DIV>
+
+
+<BR/>
+<BR/>
+
+<%= render :partial => 'brew_form' %>

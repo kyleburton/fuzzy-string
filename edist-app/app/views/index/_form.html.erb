@@ -12,6 +12,6 @@
     ["De Morgan", "D'Morgun", "D'Morgun", "Demorgyn", "De Murgen", "Dy Moregan", 
      "Dy Murgan", "Da Murgan", "Da Morgan", "Da Myrgn" ].each {|right|
   %>
-  <li><%= link_to "#{left} vs #{right}", :controller => "index", :action => "compare", :left_string=>left, :right_string=>right  %>
+  <li><%= link_to "#{left} vs #{right}", :left_string=>left, :right_string=>right  %>
   <% } %>
 </ul>

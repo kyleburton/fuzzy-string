@@ -5,3 +5,9 @@
 .miss {
   background-color: #F77
 }
+
+.brew_path {
+  font-weight: bold;
+  font-style: italic;
+  border-width: 3px;
+}

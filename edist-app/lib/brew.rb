@@ -94,18 +94,18 @@ class Brew
     ctr = @cost.delete
     matrix[0] = Array.new right_chars.size + 1
     matrix[0][0] = { :cost => @cost.initial, :left => nil, :right => nil, 
-                     :hit => false, :tb => [nil,nil], :action => INITIAL }
+                     :hit => false, :tb => [-1,-1], :action => INITIAL, :path => false }
     left_chars.each_with_index { |ch,idx|
       matrix[idx+1] = Array.new right_chars.size + 1
       matrix[idx+1][0] = { :cost => ctr, :left => ch, :right => nil, 
-                           :tb => [], :action => DELETE }
+                           :tb => [idx,0], :action => DELETE, :path => false }
       ctr += @cost.delete
     }
     
     ctr = @cost.insert
     right_chars.each_with_index { |ch,idx|
       matrix[0][idx+1] = { :cost => ctr, :left => nil, :right => ch, 
-                           :tb => [nil, nil], :action => INSERT }
+                           :tb => [0,idx], :action => INSERT, :path => false }
       ctr += @cost.insert
     }
 
@@ -154,22 +154,28 @@ class Brew
         
         # total is base + min of [up,left,up-left]
         row[col_idx] = { :cost => curr_cost, :left => left_ch, :right => right_ch, 
-                         :hit=>is_hit, :tb => tb, :action => action }
+                         :hit=>is_hit, :tb => tb, :action => action, :path => false }
+        puts "cell is: #{row[col_idx].inspect}"
       }
     }
 
-    print_matrix(matrix)
 
     ## comput the traceback...
-    traceback = []
-    curr = matrix[-1][-1][:tb]
+    traceback = [matrix[-1][-1]]
+    traceback[0][:path] = true
+    curr = traceback[0][:tb]
     while true
-      if curr[0] == 0 && curr[1] == 0
+      if curr[0] == -1 && curr[1] == -1
         break
       end
-      traceback.push curr
-      curr = matrix[curr[0]][curr[1]]
+      puts "curr=#{curr.inspect} => #{traceback[-1].inspect}"
+      traceback.unshift matrix[curr[0]][curr[1]]
+      traceback[0][:path] = true
+      curr = matrix[curr[0]][curr[1]][:tb]
     end
+
+    print_matrix(matrix)
+    puts "traceback: #{traceback.inspect}"
     [ matrix[-1][-1][:cost], matrix, traceback ]
   end
 
@@ -198,8 +204,10 @@ class Brew
 end
 
 
-brew = Brew.new
-left,right = ARGV
-left = "baby" unless left
-right = "bobby" unless right
-brew.distance(left, right, :initial => 0.0, :insert=>0.1, :delete => 15.0, :match => 0.0, :subst => 1)
+if true
+  brew = Brew.new
+  left,right = ARGV
+  left = "baby" unless left
+  right = "bobby" unless right
+  brew.distance(left, right, :initial => 0.0, :insert=>0.1, :delete => 15.0, :match => 0.0, :subst => 1)
+end
