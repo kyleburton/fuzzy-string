@@ -14,7 +14,7 @@ class Edist
     # initialize the top row of the grid
     ctr = 1
     matrix[0] = Array.new right_chars.size + 1
-    matrix[0][0] = { :cost => 0, :left => nil, :right => nil }
+    matrix[0][0] = { :cost => 0, :left => nil, :right => nil, :hit => true }
     left_chars.each_with_index { |ch,idx|
       matrix[idx+1] = Array.new right_chars.size + 1
       matrix[idx+1][0] = { :cost => ctr, :left => ch, :right => nil }
