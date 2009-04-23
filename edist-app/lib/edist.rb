@@ -2,6 +2,10 @@
 class Edist
 
   def distance(left,right)
+    if !left || !right
+      return [-1,[]]
+    end
+
     if left.size < right.size
       left, right = right, left
     end
