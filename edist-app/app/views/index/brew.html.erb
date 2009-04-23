@@ -5,8 +5,13 @@
     <TR>
       <% row.each_with_index { |cell,cell_idx|
         css_class = ""
-        css_class += cell[:hit] ? 'hit' : 'miss'
-        css_class += cell[:path] ? ' brew_path' : ''
+        if cell[:path]
+          css_class = 'brew_path'
+        elsif cell[:hit]
+          css_class = 'hit'
+        else
+          css_class = 'miss'
+        end
       -%>
         <TD CLASS="<%= css_class %>"><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %>:<%= cell[:action] %></TD>
       <% } -%>
