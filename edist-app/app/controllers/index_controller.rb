@@ -29,11 +29,11 @@ class IndexController < ApplicationController
     @delete_cost  = params[:delete_cost]  || 15.0
     @subst_cost   = params[:subst_cost]   || 1.0
     @score, @matrix, @traceback = brew.distance(@left_string,@right_string,
-                                                :initial => @initial_cost,
-                                                :match   => @match_cost,
-                                                :insert  => @insert_cost,
-                                                :delete  => @delete_cost,
-                                                :subst   => @subst_cost)
+                                                :initial => @initial_cost.to_f,
+                                                :match   => @match_cost.to_f,
+                                                :insert  => @insert_cost.to_f,
+                                                :delete  => @delete_cost.to_f,
+                                                :subst   => @subst_cost.to_f)
     
     len = @left_string.length
     len = @right_string.length if @right_string.length > len
