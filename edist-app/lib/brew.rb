@@ -160,7 +160,17 @@ class Brew
 
     print_matrix(matrix)
 
-    [ matrix[-1][-1][:cost], matrix ]
+    ## comput the traceback...
+    traceback = []
+    curr = matrix[-1][-1][:tb]
+    while true
+      if curr[0] == 0 && curr[1] == 0
+        break
+      end
+      traceback.push curr
+      curr = matrix[curr[0]][curr[1]]
+    end
+    [ matrix[-1][-1][:cost], matrix, traceback ]
   end
 
   def cell_to_s(cell)
