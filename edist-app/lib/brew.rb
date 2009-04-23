@@ -3,10 +3,10 @@
 
 # consts for edit actions
 INITIAL = 'INITIAL'
-DEL     = 'DEL'
-INS     = 'INS'
-SUB     = 'SUB'
-MAT     = 'MAT'
+DELETE  = 'DEL'
+INSERT  = 'INS'
+SUBST   = 'SUB'
+MATCH   = 'MAT'
 
 class Cost
 
@@ -77,7 +77,8 @@ class Brew
   # support providing access to the internal matrix
   #
   def distance(left,right,cost_config={})
-    @cost = Cost.new(cost_config[:initial],cost_config[:match], cost_config[:insert], cost_config[:delete], cost_config[:subst])
+    @cost = Cost.new(cost_config[:initial],cost_config[:match], cost_config[:insert], 
+                     cost_config[:delete], cost_config[:subst])
 
     left_chars  = left.split //
     right_chars = right.split //
@@ -92,16 +93,19 @@ class Brew
     # this via an array ref, this will use an (x,y) coordinate
     ctr = @cost.delete
     matrix[0] = Array.new right_chars.size + 1
-    matrix[0][0] = { :cost => @cost.initial, :left => nil, :right => nil, :hit => true, :tb => [nil,nil] }
+    matrix[0][0] = { :cost => @cost.initial, :left => nil, :right => nil, 
+                     :hit => false, :tb => [nil,nil], :action => INITIAL }
     left_chars.each_with_index { |ch,idx|
       matrix[idx+1] = Array.new right_chars.size + 1
-      matrix[idx+1][0] = { :cost => ctr, :left => ch, :right => nil, :tb => [] }
+      matrix[idx+1][0] = { :cost => ctr, :left => ch, :right => nil, 
+                           :tb => [], :action => DELETE }
       ctr += @cost.delete
     }
     
     ctr = @cost.insert
     right_chars.each_with_index { |ch,idx|
-      matrix[0][idx+1] = { :cost => ctr, :left => nil, :right => ch, :tb => [nil, nil] }
+      matrix[0][idx+1] = { :cost => ctr, :left => nil, :right => ch, 
+                           :tb => [nil, nil], :action => INSERT }
       ctr += @cost.insert
     }
 
@@ -113,14 +117,17 @@ class Brew
 
         is_hit    = true
         base_cost = 0
+        action = MATCH
         if left_ch == right_ch
           ## use the match cost
           base_cost = base_cost + @cost.match
           is_hit = true
+          action = MATCH
         else
           ## use the subst cost
           base_cost = base_cost + @cost.subst
           is_hit = false
+          action = SUBST
         end
 
         ## up means DEL
@@ -135,16 +142,19 @@ class Brew
         if left_cost < curr_cost
           curr_cost = left_cost
           tb = [row_idx, col_idx-1]
+          action = INSERT
         end
 
         if up_cost < curr_cost
           curr_cost = up_cost
           tb = [row_idx-1, col_idx]
+          action = DELETE
         end
 
         
         # total is base + min of [up,left,up-left]
-        row[col_idx] = { :cost => curr_cost, :left => left_ch, :right => right_ch, :hit=>is_hit, :tb => tb }
+        row[col_idx] = { :cost => curr_cost, :left => left_ch, :right => right_ch, 
+                         :hit=>is_hit, :tb => tb, :action => action }
       }
     }
 
@@ -158,7 +168,7 @@ class Brew
       c = cell[:cost]  || '0'
       l = cell[:left]  || '~'
       r = cell[:right] || '~'
-      "{c:#{c};l:#{l};r:#{r};tb:#{cell[:tb].inspect}}"
+      "{c:#{c};l:#{l};r:#{r};a:#{cell[:action]};tb:#{cell[:tb].inspect}}"
     else
       "{c:0;l:~;r:~}"
     end
