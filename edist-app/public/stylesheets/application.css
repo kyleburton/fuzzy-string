@@ -1,8 +1,17 @@
 .hit {
-  background-color: #7F7
+  // background-color: #7F7
+  border-width: 3px;
 }
 
 .miss {
+  // background-color: #F77
+}
+
+.phonetic_hit {
+  background-color: #7F7
+}
+
+.phonetic_miss {
   background-color: #F77
 }
 

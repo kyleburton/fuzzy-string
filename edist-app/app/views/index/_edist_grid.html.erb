@@ -1,8 +1,14 @@
 <TABLE CLASS="edist" BORDER="1" CELLSPACING="2" CELLPADDING="2">
   <% @matrix.each_with_index { |row,row_idx| -%>
     <TR>
-      <% row.each_with_index { |cell,cell_idx| -%>
-        <TD CLASS="<%= cell[:hit] ? 'hit' : 'miss' %>"><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %></TD>
+      <% row.each_with_index { |cell,cell_idx| 
+           ## color the cell based on the score so far? as a gradient from green <-> red?
+           ## from #07F to #F70
+           r = 0 + ( 0xFF * (                  cell[:cost] / @max_penalty) )
+           g = 0 + ( 0xFF * ( (@max_penalty - cell[:cost]) / @max_penalty ) )
+           color = sprintf "#%02X%02X%02X", r, g, 0x00
+        -%>
+        <TD BGCOLOR="<%= color %>" CLASS="<%= cell[:hit] ? 'hit' : 'miss' %>"><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %></TD>
       <% } -%>
     </TR>
   <% } -%>

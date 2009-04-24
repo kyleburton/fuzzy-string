@@ -1,3 +1,3 @@
-<DIV CLASS="<%= @left_string.soundex == @right_string.soundex ? 'hit' : 'miss' %>">SOUNDEX: <%= @left_string.soundex %> vs <%= @right_string.soundex %></DIV>
-<DIV CLASS="<%= @left_string.nysiis == @right_string.nysiis ? 'hit' : 'miss' %>">NYSIIS: <%= @left_string.nysiis %> vs <%= @right_string.nysiis %></DIV>
-<DIV CLASS="<%= @left_string.double_metaphone[0] == @right_string.double_metaphone[0] ? 'hit' : 'miss' %>">DOUBLE METAPHONE: <%= @left_string.double_metaphone[0] %> vs <%= @right_string.double_metaphone[0] %></DIV>
+<DIV CLASS="<%= @left_string.soundex == @right_string.soundex ? 'phonetic_hit' : 'phonetic_miss' %>">SOUNDEX: <%= @left_string.soundex %> vs <%= @right_string.soundex %></DIV>
+<DIV CLASS="<%= @left_string.nysiis == @right_string.nysiis ? 'phonetic_hit' : 'phonetic_miss' %>">NYSIIS: <%= @left_string.nysiis %> vs <%= @right_string.nysiis %></DIV>
+<DIV CLASS="<%= @left_string.double_metaphone[0] == @right_string.double_metaphone[0] ? 'phonetic_hit' : 'phonetic_miss' %>">DOUBLE METAPHONE: <%= @left_string.double_metaphone[0] %> vs <%= @right_string.double_metaphone[0] %></DIV>
