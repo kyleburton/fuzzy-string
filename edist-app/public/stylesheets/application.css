@@ -1,5 +1,6 @@
 .hit {
-  // background-color: #7F7
+  font-weight: bold;
+  font-style: italic;
   border-width: 3px;
 }
 
@@ -16,7 +17,6 @@
 }
 
 .brew_path {
-  background-color: #7F7;
   font-weight: bold;
   font-style: italic;
   border-width: 3px;
