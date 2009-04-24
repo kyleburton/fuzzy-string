@@ -41,6 +41,12 @@ class IndexController < ApplicationController
     render :partial => "title", :layout => false
   end
 
+  def traceback
+    set_params
+    compute_brew_grid
+    render :partial => "traceback", :layout => false
+  end
+
 private
   def compute_edist_grid
     edist = Edist.new
