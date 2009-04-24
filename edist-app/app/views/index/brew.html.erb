@@ -44,12 +44,13 @@
 -->
 
 <BR/>
-<DIV ID="phonetic_results">
-  <%= render :partial => 'phoentic_results' %>
-</DIV>
+<DIV ID="phonetic_results"><%= render :partial => 'phoentic_results' %></DIV>
 
 
 
+<BR/>
+<BR/>
+<%= link_to "Try this example (#{@left_string} vs #{@right_string}) as edit distance.", :action => 'edist', :left_string => @left_string, :right_string => @right_string %>
 <BR/>
 <BR/>
 

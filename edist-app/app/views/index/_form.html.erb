@@ -1,6 +1,6 @@
 <% form_tag( { :action => "edist" }, :method => :get) { -%>
-  Left String: <input type="text" name="left_string" value="<%= @left_string %>"/>  <br/>
-  Right String: <input type="text" name="right_string" value="<%= @right_string %>"/>  <br/>
+  Left String:  <input id="left_string" type="text" name="left_string" value="<%= @left_string %>"/>  <br/>
+  Right String: <input id="right_string" type="text" name="right_string" value="<%= @right_string %>"/>  <br/>
   <%= submit_tag "compare" %>
 <% } -%>
 

@@ -10,13 +10,14 @@ class IndexController < ApplicationController
 
   def edist
     set_params
-    edist = Edist.new
-    @edits, @matrix = edist.distance(@left_string,@right_string)
-    len = @left_string.length
-    len = @right_string.length if @right_string.length > len
-    @edist_score = (len.to_f - @edits.to_f) / len.to_f
+    compute_edist_grid
   end
 
+  def edist_grid
+    set_params
+    compute_edist_grid
+    render :partial => "edist_grid", :layout => false
+  end
 
   def brew
     set_params
@@ -41,6 +42,15 @@ class IndexController < ApplicationController
   end
 
 private
+  def compute_edist_grid
+    edist = Edist.new
+    @score, @matrix = edist.distance(@left_string,@right_string)
+    len = @left_string.length
+    len = @right_string.length if @right_string.length > len
+    @max_penalty = len.to_f
+    @edist_score = (@max_penalty - @score.to_f) / @max_penalty
+  end
+
   def compute_brew_grid
     the_brew = Brew.new
     @score, @matrix, @traceback = the_brew.distance(@left_string,@right_string,
@@ -56,7 +66,7 @@ private
                    @insert_cost.to_f,
                    @delete_cost.to_f,
                    @subst_cost.to_f].max * len.to_f
-    @brew_score = (@max_penalty - @score.to_f) / @max_penalty
+    @edist_score = (@max_penalty - @score.to_f) / @max_penalty
   end
 
   def set_params

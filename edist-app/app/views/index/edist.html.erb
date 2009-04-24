@@ -1,22 +1,36 @@
-<h1>"<%= @left_string %>" vs "<%= @right_string %>" : <%= @edits %> : <%= sprintf "%2.1f", @edist_score * 100 %>% </h1>
+<H1><%= render :partial => 'title' %></H1>
 
-<table class="edist" border="1" cellspacing="2" cellpadding="2">
-  <% @matrix.each_with_index { |row,row_idx| -%>
-    <tr>
-      <% row.each_with_index { |cell,cell_idx| -%>
-        <td class="<%= cell[:hit] ? 'hit' : 'miss' %>"><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %></td>
-      <% } -%>
-    </tr>
-  <% } -%>
-</table>
+<script>
+  function make_querystring(action) {
+    return "/index/" + action + "?left_string=" + escape($("#left_string").val())
+                              + "&right_string="     + escape($("#right_string").val())
+  }
 
-<br/>
-<div class="<%= @left_string.soundex == @right_string.soundex ? 'hit' : 'miss' %>">SOUNDEX: <%= @left_string.soundex %> vs <%= @right_string.soundex %></div>
-<div class="<%= @left_string.nysiis == @right_string.nysiis ? 'hit' : 'miss' %>">NYSIIS: <%= @left_string.nysiis %> vs <%= @right_string.nysiis %></div>
-<div class="<%= @left_string.double_metaphone[0] == @right_string.double_metaphone[0] ? 'hit' : 'miss' %>">DOUBLE METAPHONE: <%= @left_string.double_metaphone[0] %> vs <%= @right_string.double_metaphone[0] %></div>
+  function rerender() {
+    $('#edist_grid').load(make_querystring('edist_grid'));
+    $('#phonetic_results').load(make_querystring('phonetic_results'));
+    $('#title').load(make_querystring('title'));
+    return true
+  }
+
+  $(document).ready(function() {
+    $("#left_string").keyup(rerender)
+    $("#right_string").keyup(rerender)
+  })
+</script>
+
+<DIV id="edist_grid">
+  <%= render :partial => "edist_grid" %>
+</DIV>
+
+<BR/>
+<DIV ID="phonetic_results"><%= render :partial => 'phoentic_results' %></DIV>
 
 
-<br/>
-<br/>
+<BR/>
+<BR/>
+<%= link_to "Try this example (#{@left_string} vs #{@right_string}) as brew edit distance.", :action => 'brew', :left_string => @left_string, :right_string => @right_string %>
+<BR/>
+<BR/>
 
 <%= render :partial => 'form' %>
