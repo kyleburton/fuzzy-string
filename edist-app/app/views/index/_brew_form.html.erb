@@ -1,11 +1,11 @@
 <% form_tag( { :action => "brew" }, :method => :get) { -%>
-  Left String:  <input type="text" name="left_string" value="<%= @left_string %>"/>  <br/>
-  Right String: <input type="text" name="right_string" value="<%= @right_string %>"/>  <br/>
-  Initial:      <input type="text" name="initial_cost" value="<%= @initial_cost %>"/>  <br/>
-  Match:        <input type="text" name="match_cost" value="<%= @match_cost %>"/>  <br/>
-  Insert:       <input type="text" name="insert_cost" value="<%= @insert_cost %>"/>  <br/>
-  Delete:       <input type="text" name="delete_cost" value="<%= @delete_cost %>"/>  <br/>
-  Substitute:   <input type="text" name="subst_cost" value="<%= @subst_cost %>"/>  <br/>
+  Left String:  <input id="left_string"  type="text" name="left_string" value="<%= @left_string %>"/>  <br/>
+  Right String: <input id="right_string" type="text" name="right_string" value="<%= @right_string %>"/>  <br/>
+  Initial:      <input id="initial_cost" type="text" name="initial_cost" value="<%= @initial_cost %>"/>  <br/>
+  Match:        <input id="match_cost" type="text" name="match_cost" value="<%= @match_cost %>"/>  <br/>
+  Insert:       <input id="insert_cost" type="text" name="insert_cost" value="<%= @insert_cost %>"/>  <br/>
+  Delete:       <input id="delete_cost" type="text" name="delete_cost" value="<%= @delete_cost %>"/>  <br/>
+  Substitute:   <input id="subst_cost" type="text" name="subst_cost" value="<%= @subst_cost %>"/>  <br/>
   <%= submit_tag "compare" %>
 <% } -%>
 
@@ -18,5 +18,10 @@
      "Dy Murgan", "Da Murgan", "Da Morgan", "Da Myrgn" ].each {|right|
   %>
   <li><%= link_to "#{left} vs #{right}", :left_string=>left, :right_string=>right  %>
+  <% } %>
+  <% pairs = ["CLMBS BLVD vs COLUMBUS BOULEVARD"].each {|str|
+    left,right = str.split(' vs ', 2)
+  -%>
+    <li><%= link_to "#{left} vs #{right}", :left_string=>left, :right_string=>right  %>
   <% } %>
 </ul>

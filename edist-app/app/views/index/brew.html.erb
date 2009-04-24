@@ -1,21 +1,38 @@
-<H1>"<%= @left_string %>" vs "<%= @right_string %>" : <%= @score %> : <%= sprintf "%2.1f", @brew_score * 100 %>% </H1>
+<H1 ID="title"><%= render :partial => "title" %></H1>
 
-<TABLE CLASS="brew" BORDER="1" CELLSPACING="2" CELLPADDING="2">
-  <% @matrix.each_with_index { |row,row_idx| -%>
-    <TR>
-      <% row.each_with_index { |cell,cell_idx|
-        css_class = ""
-        if cell[:path]
-          css_class = 'brew_path'
-        else
-          css_class = 'miss'
-        end
-      -%>
-        <TD CLASS="<%= css_class %>"><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %>:<%= cell[:action] %></TD>
-      <% } -%>
-    </TR>
-  <% } -%>
-</TABLE>
+<script>
+  function make_querystring(action) {
+    return "/index/" + action + "?left_string=" + escape($("#left_string").val())
+                         + "&right_string="     + escape($("#right_string").val())
+                         + "&initial_cost="     + escape($("#initial_cost").val())
+                         + "&match_cost="       + escape($("#match_cost").val())
+                         + "&insert_cost="      + escape($("#insert_cost").val())
+                         + "&delete_cost="      + escape($("#delete_cost").val())
+                         + "&subst_cost="       + escape($("#subst_cost").val())
+  }
+
+  function rerender() {
+    $('#brew_grid').load(make_querystring('brew_grid'));
+    $('#phonetic_results').load(make_querystring('phonetic_results'));
+    $('#title').load(make_querystring('title'));
+    return true
+  }
+
+  $(document).ready(function() {
+    $("#left_string").keyup(rerender)
+    $("#right_string").keyup(rerender)
+    $("#initial_cost").keyup(rerender)
+    $("#match_cost").keyup(rerender)
+    $("#insert_cost").keyup(rerender)
+    $("#delete_cost").keyup(rerender)
+    $("#subst_cost").keyup(rerender)
+  })
+</script>
+
+
+<div id="brew_grid">
+  <%= render :partial => 'brew_grid' %>
+</div>
 
 <!--
 <H3> Traceback </H3>
@@ -27,9 +44,10 @@
 -->
 
 <BR/>
-<DIV CLASS="<%= @left_string.soundex == @right_string.soundex ? 'hit' : 'miss' %>">SOUNDEX: <%= @left_string.soundex %> vs <%= @right_string.soundex %></DIV>
-<DIV CLASS="<%= @left_string.nysiis == @right_string.nysiis ? 'hit' : 'miss' %>">NYSIIS: <%= @left_string.nysiis %> vs <%= @right_string.nysiis %></DIV>
-<DIV CLASS="<%= @left_string.double_metaphone[0] == @right_string.double_metaphone[0] ? 'hit' : 'miss' %>">DOUBLE METAPHONE: <%= @left_string.double_metaphone[0] %> vs <%= @right_string.double_metaphone[0] %></DIV>
+<DIV ID="phonetic_results">
+  <%= render :partial => 'phoentic_results' %>
+</DIV>
+
 
 
 <BR/>

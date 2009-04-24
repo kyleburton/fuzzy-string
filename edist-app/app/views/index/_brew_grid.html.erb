@@ -1,0 +1,16 @@
+<TABLE CLASS="brew" BORDER="1" CELLSPACING="2" CELLPADDING="2">
+  <% @matrix.each_with_index { |row,row_idx| -%>
+    <TR>
+      <% row.each_with_index { |cell,cell_idx|
+        css_class = ""
+        if cell[:path]
+          css_class = 'brew_path'
+        else
+          css_class = 'miss'
+        end
+      -%>
+        <TD CLASS="<%= css_class %>"><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %>:<%= cell[:action] %></TD>
+      <% } -%>
+    </TR>
+  <% } -%>
+</TABLE>
