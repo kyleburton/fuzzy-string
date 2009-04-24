@@ -59,13 +59,11 @@ private
                                                 :insert  => @insert_cost.to_f,
                                                 :delete  => @delete_cost.to_f,
                                                 :subst   => @subst_cost.to_f)
-    len = @left_string.length
-    len = @right_string.length if @right_string.length > len
-    @max_penalty = [@initial_cost.to_f,
-                   @match_cost.to_f,
-                   @insert_cost.to_f,
-                   @delete_cost.to_f,
-                   @subst_cost.to_f].max * len.to_f
+
+    del_cost = @delete_cost.to_f * @left_string.length.to_f
+    sub_cost = @subst_cost.to_f  * @left_string.length.to_f
+    ins_cost = @insert_cost.to_f * @right_string.length.to_f
+    @max_penalty = [del_cost + ins_cost, sub_cost].max
     @edist_score = (@max_penalty - @score.to_f) / @max_penalty
   end
 
