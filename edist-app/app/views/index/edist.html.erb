@@ -10,6 +10,17 @@
     $('#edist_grid').load(make_querystring('edist_grid'));
     $('#phonetic_results').load(make_querystring('phonetic_results'));
     $('#title').load(make_querystring('title'));
+    var link_text = '<a href="/index/brew?left_string=' 
+         + escape($('#left_string').val())
+         + '&right_string=' 
+         + escape($('#right_string').val())
+         + '">Try this example (' 
+         + $('#left_string').val()
+         + ' vs ' 
+         + $('#right_string').val()
+         + ') as edit distance.</a>'
+    console.log('resetting other_link...' + link_text)
+    $('#other_link').html(link_text)
     return true
   }
 
@@ -29,7 +40,7 @@
 
 <BR/>
 <BR/>
-<%= link_to "Try this example (#{@left_string} vs #{@right_string}) as brew edit distance.", :action => 'brew', :left_string => @left_string, :right_string => @right_string %>
+<DIV id="other_link"> <%= link_to "Try this example (#{@left_string} vs #{@right_string}) as brew edit distance.", :action => 'brew', :left_string => @left_string, :right_string => @right_string %> </DIV>
 <BR/>
 <BR/>
 
