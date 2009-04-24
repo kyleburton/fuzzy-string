@@ -2,13 +2,13 @@ Title: A Survey of Fuzzy String Matching Algorithms
 
 Brief: 
 
-You like how Google suggests a fix when you mis-spell (I mean typo) a
-word...you like how mis-spellings are underlined in red, cleaning things up
-before your email is sent.  Fuzzy string matching dates back to the 1800s to
-the US Census Bureau's mandate of not overcounting the US population.  My
-personal exploration into the record linkage aspect of data integration has
-touched on several fuzzy string matching algorithms.  
+Do you like how Google suggests a fix when you mis-spell (I mean typo)
+a word?  Did you ever wonder how you could implement a spell checker?
 
-Come and hear how several of these algorithms work and techniques I have used
-them in industry settings with large datasets.
+Fuzzy string matching dates back to the 1800s to the US Census
+Bureau's mandate of not overcounting the US population.  My personal
+exploration into the record linkage aspect of data integration has
+touched on several fuzzy string matching algorithms.  Come and hear
+about how several of these algorithms work and some of the techniques
+I have used in industry settings with large datasets.
 
