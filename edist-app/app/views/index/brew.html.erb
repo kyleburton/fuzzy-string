@@ -2,6 +2,7 @@
 
 <script>
   function make_querystring(action) {
+    console.log("extended=" + $("#extended").is(':checked'))
     return "/index/" + action + "?left_string=" + escape($("#left_string").val())
                          + "&right_string="     + escape($("#right_string").val())
                          + "&initial_cost="     + escape($("#initial_cost").val())
@@ -9,6 +10,7 @@
                          + "&insert_cost="      + escape($("#insert_cost").val())
                          + "&delete_cost="      + escape($("#delete_cost").val())
                          + "&subst_cost="       + escape($("#subst_cost").val())
+                         + "&extended="         + $("#extended").is(':checked')
   }
 
   function rerender() {
@@ -24,19 +26,17 @@
          + ' vs ' 
          + $('#right_string').val()
          + ') as edit distance.</a>'
-    console.log('resetting other_link...' + link_text)
     $('#other_link').html(link_text)
     return true
   }
 
   $(document).ready(function() {
-    $("#left_string").keyup(rerender)
-    $("#right_string").keyup(rerender)
-    $("#initial_cost").keyup(rerender)
-    $("#match_cost").keyup(rerender)
-    $("#insert_cost").keyup(rerender)
-    $("#delete_cost").keyup(rerender)
-    $("#subst_cost").keyup(rerender)
+    var elements = ["left_string", "right_string", "initial_cost", "match_cost",
+                    "insert_cost", "delete_cost", "subst_cost" ]
+    for ( var ii = 0; ii < elements.length; ++ii ) {
+      $("#" + elements[ii]).keyup(rerender)
+    }
+    $("#extended").click(rerender)
   })
 </script>
 

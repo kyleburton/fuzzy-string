@@ -56,7 +56,7 @@ class Edist
       }
     }
 
-    print_matrix(matrix)
+    #print_matrix(matrix)
 
     [ matrix[-1][-1][:cost], matrix ]
   end

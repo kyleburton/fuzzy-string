@@ -155,7 +155,7 @@ class Brew
         # total is base + min of [up,left,up-left]
         row[col_idx] = { :cost => curr_cost, :left => left_ch, :right => right_ch, 
                          :hit=>is_hit, :tb => tb, :action => action, :path => false }
-        puts "cell is: #{row[col_idx].inspect}"
+        #puts "cell is: #{row[col_idx].inspect}"
       }
     }
 
@@ -168,14 +168,14 @@ class Brew
       if curr[0] == -1 && curr[1] == -1
         break
       end
-      puts "curr=#{curr.inspect} => #{traceback[-1].inspect}"
+      #puts "curr=#{curr.inspect} => #{traceback[-1].inspect}"
       traceback.unshift matrix[curr[0]][curr[1]]
       traceback[0][:path] = true
       curr = matrix[curr[0]][curr[1]][:tb]
     end
 
-    print_matrix(matrix)
-    puts "traceback: #{traceback.inspect}"
+    #print_matrix(matrix)
+    #puts "traceback: #{traceback.inspect}"
     [ matrix[-1][-1][:cost], matrix, traceback ]
   end
 
@@ -192,7 +192,6 @@ class Brew
 
   # TODO: use shoes to print a GUI?
   def print_matrix(matrix)
-    puts "...Header line here..."
     matrix.each_with_index {|row,row_idx|
       row.each_with_index { |cell,col_idx|
         print " #{cell_to_s(cell)}"

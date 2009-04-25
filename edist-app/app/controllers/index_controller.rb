@@ -44,16 +44,16 @@ class IndexController < ApplicationController
 private
   def compute_edist_grid
     edist = Edist.new
-    @score, @matrix = edist.distance(@left_string,@right_string)
+    @cost, @matrix = edist.distance(@left_string,@right_string)
     len = @left_string.length
     len = @right_string.length if @right_string.length > len
     @max_penalty = len.to_f
-    @edist_score = (@max_penalty - @score.to_f) / @max_penalty
+    @edist_score = (@max_penalty - @cost.to_f) / @max_penalty
   end
 
   def compute_brew_grid
     the_brew = Brew.new
-    @score, @matrix, @traceback = the_brew.distance(@left_string,@right_string,
+    @cost, @matrix, @traceback = the_brew.distance(@left_string,@right_string,
                                                 :initial => @initial_cost.to_f,
                                                 :match   => @match_cost.to_f,
                                                 :insert  => @insert_cost.to_f,
@@ -61,12 +61,22 @@ private
                                                 :subst   => @subst_cost.to_f)
     len = @left_string.length
     len = @right_string.length if @right_string.length > len
-    @max_penalty = [@initial_cost.to_f,
-                   @match_cost.to_f,
-                   @insert_cost.to_f,
-                   @delete_cost.to_f,
-                   @subst_cost.to_f].max * len.to_f
-    @edist_score = (@max_penalty - @score.to_f) / @max_penalty
+    len = @left_string.length
+    len = @right_string.length if @right_string.length > len
+    @max_penalty = len.to_f
+
+
+    puts "brew_grid: @extended=#{@extended}"
+    if @extended
+      # [0] is 'initial', [1] is the first 'edit'
+      puts "@traceback[1][:action] == \"#{@traceback[1][:action]}\""
+      if @traceback[1][:action] != "MAT"
+        @cost = @cost + 10.0
+      end
+    end
+
+    @edist_score = (@max_penalty - @cost.to_f) / @max_penalty
+    @edist_score = 0.0 if @edist_score < 0
   end
 
   def set_params
@@ -77,6 +87,9 @@ private
     @insert_cost  = params[:insert_cost]  || 0.1
     @delete_cost  = params[:delete_cost]  || 15.0
     @subst_cost   = params[:subst_cost]   || 1.0
+    puts "set_params: params[:extended]=#{params[:extended]}"
+    @extended     = params[:extended]
+    @extended     = (@extended.nil? || @extended.empty? || @extended == "false") ? false : true
   end
 
 
