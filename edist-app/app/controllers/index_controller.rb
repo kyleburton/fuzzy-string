@@ -41,6 +41,12 @@ class IndexController < ApplicationController
     render :partial => "title", :layout => false
   end
 
+  def traceback
+    set_params
+    compute_brew_grid
+    render :partial => "traceback", :layout => false
+  end
+
 private
   def compute_edist_grid
     edist = Edist.new
@@ -54,26 +60,17 @@ private
   def compute_brew_grid
     the_brew = Brew.new
     @cost, @matrix, @traceback = the_brew.distance(@left_string,@right_string,
-                                                :initial => @initial_cost.to_f,
-                                                :match   => @match_cost.to_f,
-                                                :insert  => @insert_cost.to_f,
-                                                :delete  => @delete_cost.to_f,
-                                                :subst   => @subst_cost.to_f)
+                                                :initial  => @initial_cost.to_f,
+                                                :match    => @match_cost.to_f,
+                                                :insert   => @insert_cost.to_f,
+                                                :delete   => @delete_cost.to_f,
+                                                :subst    => @subst_cost.to_f,
+                                                :extended => @extended)
     len = @left_string.length
     len = @right_string.length if @right_string.length > len
     len = @left_string.length
     len = @right_string.length if @right_string.length > len
     @max_penalty = len.to_f
-
-
-    puts "brew_grid: @extended=#{@extended}"
-    if @extended
-      # [0] is 'initial', [1] is the first 'edit'
-      puts "@traceback[1][:action] == \"#{@traceback[1][:action]}\""
-      if @traceback[1][:action] != "MAT"
-        @cost = @cost + 10.0
-      end
-    end
 
     @edist_score = (@max_penalty - @cost.to_f) / @max_penalty
     @edist_score = 0.0 if @edist_score < 0

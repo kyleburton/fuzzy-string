@@ -1,13 +1,22 @@
 .hit {
-  background-color: #7F7
+  font-weight: bold;
+  font-style: italic;
+  border-width: 3px;
 }
 
 .miss {
+  // background-color: #F77
+}
+
+.phonetic_hit {
+  background-color: #7F7
+}
+
+.phonetic_miss {
   background-color: #F77
 }
 
 .brew_path {
-  background-color: #7F7;
   font-weight: bold;
   font-style: italic;
   border-width: 3px;

@@ -8,8 +8,15 @@
         else
           css_class = 'miss'
         end
+
+        r = 0xFF * (                  cell[:cost] / @max_penalty)
+        r = 0xFF if r > 255
+        g = 0xFF * ( (@max_penalty - cell[:cost]) / @max_penalty )
+        g = 0 if g < 0
+        color = sprintf "#%02X%02X%02X", r, g, 0x00
+
       -%>
-        <TD CLASS="<%= css_class %>"><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %>:<%= cell[:action] %></TD>
+        <TD BGCOLOR="<%= color %>" CLASS="<%= css_class %>"><%= cell[:cost] %>:<%= cell[:left] %>:<%= cell[:right] %>:<%= cell[:action] %></TD>
       <% } -%>
     </TR>
   <% } -%>

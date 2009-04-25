@@ -1,0 +1,24 @@
+<H3> Side by Side </H3>
+<TABLE BORDER="1" cellpadding="5">
+  <% @traceback[1..-1].each { |tb| 
+       glyph = '&nbsp;'
+       left  = tb[:left]
+       right = tb[:right]
+       style_class = ''
+       if    tb[:action] == "INS"
+         glyph = '+'
+         left = ''
+         style_class = 'hit'
+       elsif tb[:action] == "DEL"
+         glyph = 'x'
+         right = ''
+         style_class = 'hit'
+       elsif tb[:action] == "SUB"
+         glyph = '<>'
+         style_class = 'hit'
+       end
+    -%>
+    <TR><TD><%= left %></TD><TD CLASS="<%= style_class %>"><%= glyph %></TD><TD><%= right %></TD></TR>
+<!--    <TR><TD><%= tb.inspect %></TD></TR> -->
+  <% } -%>
+</TABLE>

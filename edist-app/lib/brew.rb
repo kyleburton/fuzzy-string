@@ -1,21 +1,15 @@
 # text brew, adapted from Perl implementation Text::Brew module :
 # http://search.cpan.org/~kcivey/Text-Brew-0.02/lib/Text/Brew.pm
 
-# consts for edit actions
-INITIAL = 'INITIAL'
-DELETE  = 'DEL'
-INSERT  = 'INS'
-SUBST   = 'SUB'
-MATCH   = 'MAT'
-
 class Cost
 
-  def initialize(initial,match,insert,delete,subst)
-    @initial = initial || 0.0
-    @match   = match  || 0.0
-    @insert  = insert || 1.0
-    @delete  = delete || 1.0
-    @subst   = subst  || 2.0
+  def initialize(initial,match,insert,delete,subst,extended)
+    @initial  = initial || 0.0
+    @match    = match  || 0.0
+    @insert   = insert || 1.0
+    @delete   = delete || 1.0
+    @subst    = subst  || 2.0
+    @extended = extended || false
   end
 
   def initial
@@ -58,6 +52,14 @@ class Cost
     @subst = val
   end
 
+  def extended
+    @extended
+  end
+
+  def extended=(val)
+    @extended = val
+  end
+
   def to_s
     "Cost{#{self.hash}}(initial=#{@initial};match=#{@match};insert=#{@insert};delete=#{@delete};subst=#{@subst})"
   end
@@ -65,6 +67,14 @@ class Cost
 end
 
 class Brew
+
+  # consts for edit actions
+  INITIAL = 'INITIAL'
+  DELETE  = 'DEL'
+  INSERT  = 'INS'
+  SUBST   = 'SUB'
+  MATCH   = 'MAT'
+  EXTENDED_INITIAL_EDIT_COST = 10.0
 
   # the perl module supports an option '-output' =>
   # ['distance','both','edits'] which determines the return value
@@ -78,7 +88,7 @@ class Brew
   #
   def distance(left,right,cost_config={})
     @cost = Cost.new(cost_config[:initial],cost_config[:match], cost_config[:insert], 
-                     cost_config[:delete], cost_config[:subst])
+                     cost_config[:delete], cost_config[:subst], cost_config[:extended])
 
     left_chars  = left.split //
     right_chars = right.split //
@@ -102,8 +112,12 @@ class Brew
       ctr += @cost.delete
     }
     
+
     ctr = @cost.insert
     right_chars.each_with_index { |ch,idx|
+      if @cost.extended && idx == 0
+        ctr = EXTENDED_INITIAL_EDIT_COST
+      end
       matrix[0][idx+1] = { :cost => ctr, :left => nil, :right => ch, 
                            :tb => [0,idx], :action => INSERT, :path => false }
       ctr += @cost.insert
@@ -151,11 +165,20 @@ class Brew
           action = DELETE
         end
 
+
+        if @cost.extended && row_idx == 1 && col_idx == 1
+          puts "brew.distance: extended, action=#{action}"
+          if action != "MAT"
+            curr_cost = curr_cost + EXTENDED_INITIAL_EDIT_COST
+          end
+        end
+
         
         # total is base + min of [up,left,up-left]
         row[col_idx] = { :cost => curr_cost, :left => left_ch, :right => right_ch, 
                          :hit=>is_hit, :tb => tb, :action => action, :path => false }
         #puts "cell is: #{row[col_idx].inspect}"
+
       }
     }
 

@@ -17,6 +17,7 @@
     $('#brew_grid').load(make_querystring('brew_grid'));
     $('#phonetic_results').load(make_querystring('phonetic_results'));
     $('#title').load(make_querystring('title'));
+    $('#traceback').load(make_querystring('traceback'));
     var link_text = '<a href="/index/edist?left_string=' 
          + escape($('#left_string').val())
          + '&right_string=' 
@@ -44,25 +45,37 @@
 <div id="brew_grid">
   <%= render :partial => 'brew_grid' %>
 </div>
-
-<!--
-<H3> Traceback </H3>
-<UL>
-  <% @traceback.each { |tb| %>
-    <LI><%= tb.inspect %></LI>
-  <% } %>
-</UL>
--->
-
 <BR/>
 <DIV ID="phonetic_results"><%= render :partial => 'phoentic_results' %></DIV>
 
 
 
 <BR/>
-<BR/>
 <DIV id="other_link"> <%= link_to "Try this example (#{@left_string} vs #{@right_string}) as edit distance.", :action => 'edist', :left_string => @left_string, :right_string => @right_string %> </DIV>
-<BR/>
 <BR/>
 
 <%= render :partial => 'brew_form' %>
+
+
+<DIV ID="traceback">
+<%= render :partial => 'traceback' %>
+</DIV>
+
+
+
+<h2>Other Examples:</h2>
+
+<ul>
+  <%
+    left = "De Morgan"
+    ["De Morgan", "D'Morgun", "D'Morgun", "Demorgyn", "De Murgen", "Dy Moregan", 
+     "Dy Murgan", "Da Murgan", "Da Morgan", "Da Myrgn" ].each {|right|
+  %>
+  <li><%= link_to "#{left} vs #{right}", :left_string=>left, :right_string=>right  %>
+  <% } %>
+  <% pairs = ["CLMBS BLVD vs COLUMBUS BOULEVARD", "LA JOLLA vs LA HOYA"].each {|str|
+    left,right = str.split(' vs ', 2)
+  -%>
+    <li><%= link_to "#{left} vs #{right}", :left_string=>left, :right_string=>right  %>
+  <% } %>
+</ul>
