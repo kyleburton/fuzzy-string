@@ -73,7 +73,11 @@
   %>
   <li><%= link_to "#{left} vs #{right}", :left_string=>left, :right_string=>right  %>
   <% } %>
-  <% pairs = ["CLMBS BLVD vs COLUMBUS BOULEVARD", "LA JOLLA vs LA HOYA"].each {|str|
+  <% pairs = ["CLMBS BLVD vs COLUMBUS BOULEVARD", 
+              "xCLMBS BLVD vs COLUMBUS BOULEVARD", 
+              "CLMBS vs COLUMBUS", 
+              "xCLMBS vs COLUMBUS", 
+              "LA JOLLA vs LA HOYA"].each {|str|
     left,right = str.split(' vs ', 2)
   -%>
     <li><%= link_to "#{left} vs #{right}", :left_string=>left, :right_string=>right  %>
