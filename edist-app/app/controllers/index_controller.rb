@@ -82,9 +82,8 @@ private
     @initial_cost = params[:initial_cost] || 0.0
     @match_cost   = params[:match_cost]   || 0.0
     @insert_cost  = params[:insert_cost]  || 0.1
-    @delete_cost  = params[:delete_cost]  || 15.0
-    @subst_cost   = params[:subst_cost]   || 1.0
-    puts "set_params: params[:extended]=#{params[:extended]}"
+    @delete_cost  = params[:delete_cost]  || 5.0
+    @subst_cost   = params[:subst_cost]   || 5.0
     @extended     = params[:extended]
     @extended     = (@extended.nil? || @extended.empty? || @extended == "false") ? false : true
   end

@@ -12,6 +12,14 @@ class Cost
     @extended = extended || false
   end
 
+  def max
+    [@initial,
+     @match,
+     @insert,
+     @delete,
+     @subst].max
+  end
+
   def initial
     @initial
   end
@@ -74,7 +82,6 @@ class Brew
   INSERT  = 'INS'
   SUBST   = 'SUB'
   MATCH   = 'MAT'
-  EXTENDED_INITIAL_EDIT_COST = 10.0
 
   # the perl module supports an option '-output' =>
   # ['distance','both','edits'] which determines the return value
@@ -116,7 +123,7 @@ class Brew
     ctr = @cost.insert
     right_chars.each_with_index { |ch,idx|
       if @cost.extended && idx == 0
-        ctr = EXTENDED_INITIAL_EDIT_COST
+        ctr = @cost.max
       end
       matrix[0][idx+1] = { :cost => ctr, :left => nil, :right => ch, 
                            :tb => [0,idx], :action => INSERT, :path => false }
@@ -165,15 +172,6 @@ class Brew
           action = DELETE
         end
 
-
-        if @cost.extended && row_idx == 1 && col_idx == 1
-          puts "brew.distance: extended, action=#{action}"
-          if action != "MAT"
-            curr_cost = curr_cost + EXTENDED_INITIAL_EDIT_COST
-          end
-        end
-
-        
         # total is base + min of [up,left,up-left]
         row[col_idx] = { :cost => curr_cost, :left => left_ch, :right => right_ch, 
                          :hit=>is_hit, :tb => tb, :action => action, :path => false }
