@@ -1,23 +1,32 @@
 <H1 ID="title"><%= render :partial => "title" %></H1>
 
 <script>
+  // Allow scripts to work when Firebug is not loaded.
+  if (typeof(console) == "undefined") {
+      var console = {
+        log: function() {}
+      }
+  }
+
+  function kv_param(pname) {
+    return pname + "=" + escape($("#" + pname).val())
+  }
+
   function make_querystring(action) {
     console.log("extended=" + $("#extended").is(':checked'))
-    return "/index/" + action + "?left_string=" + escape($("#left_string").val())
-                         + "&right_string="     + escape($("#right_string").val())
-                         + "&initial_cost="     + escape($("#initial_cost").val())
-                         + "&match_cost="       + escape($("#match_cost").val())
-                         + "&insert_cost="      + escape($("#insert_cost").val())
-                         + "&delete_cost="      + escape($("#delete_cost").val())
-                         + "&subst_cost="       + escape($("#subst_cost").val())
-                         + "&extended="         + $("#extended").is(':checked')
+    return "/index/" + action + "?" 
+           + jQuery.map(["left_string","right_string","initial_cost","match_cost",
+                    "insert_cost","delete_cost","subst_cost"], kv_param).join("&")
+           + "&extended=" + $("#extended").is(':checked')
+  }
+
+  function reload_div(id) {
+    $('#' + id).load(make_querystring(id));
   }
 
   function rerender() {
-    $('#brew_grid').load(make_querystring('brew_grid'));
-    $('#phonetic_results').load(make_querystring('phonetic_results'));
-    $('#title').load(make_querystring('title'));
-    $('#traceback').load(make_querystring('traceback'));
+    jQuery.map(['brew_grid', 'phonetic_results', 'title', 'traceback'],reload_div)
+
     var link_text = '<a href="/index/edist?left_string=' 
          + escape($('#left_string').val())
          + '&right_string=' 
