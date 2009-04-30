@@ -1,6 +1,6 @@
 <H3> Side by Side </H3>
 <TABLE BORDER="1" cellpadding="5">
-  <% @traceback[1..-1].each { |tb| 
+  <% @traceback[1..(@traceback.length-1)].each_with_index { |tb,tb_idx| 
        glyph = '&nbsp;'
        left  = tb[:left]
        right = tb[:right]
@@ -15,6 +15,16 @@
          style_class = 'hit'
        elsif tb[:action] == "SUB"
          glyph = '<>'
+         style_class = 'hit'
+       end
+
+       if @traceback[tb_idx+1] && @traceback[tb_idx+1][:action] == "TRN"
+         puts "TB2, idx=#{tb_idx} is TRN"
+         glyph = '\\'
+         style_class = 'hit'
+       elsif tb[:action] == "TRN"
+         puts "TB, idx=#{tb_idx} is TRN"
+         glyph = '/'
          style_class = 'hit'
        end
     -%>

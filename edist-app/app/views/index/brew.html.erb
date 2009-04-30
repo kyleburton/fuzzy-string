@@ -16,7 +16,7 @@
     console.log("extended=" + $("#extended").is(':checked'))
     return "/index/" + action + "?" 
            + jQuery.map(["left_string","right_string","initial_cost","match_cost",
-                    "insert_cost","delete_cost","subst_cost"], kv_param).join("&")
+                    "insert_cost","delete_cost","subst_cost","transposition_cost"], kv_param).join("&")
            + "&extended=" + $("#extended").is(':checked')
   }
 
@@ -42,7 +42,7 @@
 
   $(document).ready(function() {
     var elements = ["left_string", "right_string", "initial_cost", "match_cost",
-                    "insert_cost", "delete_cost", "subst_cost" ]
+                    "insert_cost", "delete_cost", "subst_cost", "transposition_cost" ]
     for ( var ii = 0; ii < elements.length; ++ii ) {
       $("#" + elements[ii]).keyup(rerender)
     }

@@ -60,12 +60,13 @@ private
   def compute_brew_grid
     the_brew = Brew.new
     @cost, @matrix, @traceback = the_brew.distance(@left_string,@right_string,
-                                                :initial  => @initial_cost.to_f,
-                                                :match    => @match_cost.to_f,
-                                                :insert   => @insert_cost.to_f,
-                                                :delete   => @delete_cost.to_f,
-                                                :subst    => @subst_cost.to_f,
-                                                :extended => @extended)
+                                                :initial   => @initial_cost.to_f,
+                                                :match     => @match_cost.to_f,
+                                                :insert    => @insert_cost.to_f,
+                                                :delete    => @delete_cost.to_f,
+                                                :subst     => @subst_cost.to_f,
+                                                :transpose => @transposition_cost.to_f,
+                                                :extended  => @extended)
     len = @left_string.length
     len = @right_string.length if @right_string.length > len
     len = @left_string.length
@@ -84,6 +85,7 @@ private
     @insert_cost  = params[:insert_cost]  || 0.1
     @delete_cost  = params[:delete_cost]  || 5.0
     @subst_cost   = params[:subst_cost]   || 5.0
+    @transposition_cost = params[:transposition_cost]   || 1.0
     @extended     = params[:extended]
     @extended     = (@extended.nil? || @extended.empty? || @extended == "false") ? false : true
   end

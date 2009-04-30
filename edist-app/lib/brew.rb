@@ -3,12 +3,13 @@
 
 class Cost
 
-  def initialize(initial,match,insert,delete,subst,extended)
-    @initial  = initial || 0.0
-    @match    = match  || 0.0
-    @insert   = insert || 1.0
-    @delete   = delete || 1.0
-    @subst    = subst  || 2.0
+  def initialize(initial,match,insert,delete,subst,transpose,extended)
+    @initial   = initial || 0.0
+    @match     = match  || 0.0
+    @insert    = insert || 1.0
+    @delete    = delete || 1.0
+    @subst     = subst  || 2.0
+    @transpose = transpose || 2.0
     @extended = extended || false
   end
 
@@ -68,8 +69,16 @@ class Cost
     @extended = val
   end
 
+  def transpose
+    @transpose
+  end
+
+  def transpose=(val)
+    @transpose = val
+  end
+
   def to_s
-    "Cost{#{self.hash}}(initial=#{@initial};match=#{@match};insert=#{@insert};delete=#{@delete};subst=#{@subst})"
+    "Cost{#{self.hash}}(initial=#{@initial};match=#{@match};insert=#{@insert};delete=#{@delete};subst=#{@subst};transpose=#{@transpose})"
   end
 
 end
@@ -77,11 +86,12 @@ end
 class Brew
 
   # consts for edit actions
-  INITIAL = 'INITIAL'
-  DELETE  = 'DEL'
-  INSERT  = 'INS'
-  SUBST   = 'SUB'
-  MATCH   = 'MAT'
+  INITIAL   = 'INITIAL'
+  DELETE    = 'DEL'
+  INSERT    = 'INS'
+  SUBST     = 'SUB'
+  MATCH     = 'MAT'
+  TRANSPOSE = 'TRN'
 
   # the perl module supports an option '-output' =>
   # ['distance','both','edits'] which determines the return value
@@ -95,7 +105,8 @@ class Brew
   #
   def distance(left,right,cost_config={})
     @cost = Cost.new(cost_config[:initial],cost_config[:match], cost_config[:insert], 
-                     cost_config[:delete], cost_config[:subst], cost_config[:extended])
+                     cost_config[:delete], cost_config[:subst], cost_config[:transpose], 
+                     cost_config[:extended])
 
     left_chars  = left.split //
     right_chars = right.split //
@@ -145,10 +156,20 @@ class Brew
           is_hit = true
           action = MATCH
         else
+          is_hit = false
           ## use the subst cost
           base_cost = base_cost + @cost.subst
-          is_hit = false
           action = SUBST
+        end
+
+        can_transpose = false
+        transpose_cost = nil
+        if left_idx >= 1 && right_idx >= 1 && 
+            left_chars[left_idx-1] == right_chars[right_idx] && 
+            left_chars[left_idx]   == right_chars[right_idx-1]
+          can_transpose = true
+          transpose_cost = matrix[row_idx-2][col_idx-2][:cost] + @cost.transpose
+          puts "TRANSPOSE: #{left_idx}:#{left_ch} vs #{right_idx}:#{right_ch} cost(#{@cost.transpose})=#{transpose_cost}"
         end
 
         ## up means DEL
@@ -172,11 +193,14 @@ class Brew
           action = DELETE
         end
 
-        # total is base + min of [up,left,up-left]
+        if can_transpose && transpose_cost < curr_cost
+          curr_cost = transpose_cost
+          tb = [row_idx-1, col_idx-1]
+          action = TRANSPOSE
+        end
+
         row[col_idx] = { :cost => curr_cost, :left => left_ch, :right => right_ch, 
                          :hit=>is_hit, :tb => tb, :action => action, :path => false }
-        #puts "cell is: #{row[col_idx].inspect}"
-
       }
     }
 
@@ -224,7 +248,7 @@ class Brew
 end
 
 
-if true
+if false
   brew = Brew.new
   left,right = ARGV
   left = "baby" unless left
