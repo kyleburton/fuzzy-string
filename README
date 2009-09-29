@@ -1,3 +1,4 @@
+
 Title: A Survey of Fuzzy String Matching Algorithms
 
 Brief: 
@@ -11,4 +12,17 @@ exploration into the record linkage aspect of data integration has
 touched on several fuzzy string matching algorithms.  Come and hear
 about how several of these algorithms work and some of the techniques
 I have used in industry settings with large datasets.
+
+
+
+TODO:
+
+ - implement the cmdline search over any file listing words
+    default this to the dictionary, but also show examples
+    using the census names
+
+ - implement a cmdline optimizer (possibly using genetic algorithims)
+   which given a training set of yes/no tripples (word-a, word-b, desired-result)
+   will tune Brew and / or find a good 'matcher ensemble' function for 
+   that data-set
 
