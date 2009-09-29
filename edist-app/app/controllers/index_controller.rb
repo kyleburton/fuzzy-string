@@ -79,7 +79,9 @@ private
 
   def set_params
     @left_string  = params[:left_string]  || 'BRYN'
+    @left_string.downcase!
     @right_string = params[:right_string] || 'RESTAURANT'
+    @right_string.downcase!
     @initial_cost = params[:initial_cost] || 0.0
     @match_cost   = params[:match_cost]   || 0.0
     @insert_cost  = params[:insert_cost]  || 0.1

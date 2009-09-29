@@ -21,10 +21,12 @@ def edit_distance_sim(left,right)
 end
 
 
-target = "De Morgan"
-words = ["De Morgan", "D'Morgun", "D'Morgun", "Demorgyn", "De Murgen", "Dy Moregan", "Dy Murgan", "Da Murgan", "Da Morgan", "Da Myrgn"];
+if $0 == __FILE__
+  target = "De Morgan"
+  words = ["De Morgan", "D'Morgun", "D'Morgun", "Demorgyn", "De Murgen", "Dy Moregan", "Dy Murgan", "Da Murgan", "Da Morgan", "Da Myrgn"];
 
-words.each {|word|
-  puts "#{target} vs #{word} => #{edit_distance(target,word)} => #{edit_distance_sim(target,word)}"
-}
+  words.each {|word|
+    puts "#{target} vs #{word} => #{edit_distance(target,word)} => #{edit_distance_sim(target,word)}"
+  }
 
+end

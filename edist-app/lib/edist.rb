@@ -84,8 +84,9 @@ class Edist
   end
 end
 
-
-edist = Edist.new
-args = ARGV
-args = ["kitten","sitting"] unless args.size > 0
-edist.distance(args[0],args[1])
+if $0 == __FILE__
+  edist = Edist.new
+  args = ARGV
+  args = ["kitten","sitting"] unless args.size > 0
+  edist.distance(args[0],args[1])
+end
