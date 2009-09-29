@@ -5,27 +5,28 @@
   if (typeof(console) == "undefined") {
       var console = {
         log: function() {}
-      }
+      };
   }
 
-  function kv_param(pname) {
-    return pname + "=" + escape($("#" + pname).val())
-  }
+  Edist = {};
+  Edist.kvParam = function(pname) {
+    return pname + "=" + escape($("#" + pname).val());
+  };
 
-  function make_querystring(action) {
-    console.log("extended=" + $("#extended").is(':checked'))
+  Edist.makeQuerystring = function (action) {
+    console.log("extended=" + $("#extended").is(':checked'));
     return "/index/" + action + "?" 
            + jQuery.map(["left_string","right_string","initial_cost","match_cost",
-                    "insert_cost","delete_cost","subst_cost","transposition_cost"], kv_param).join("&")
-           + "&extended=" + $("#extended").is(':checked')
-  }
+                    "insert_cost","delete_cost","subst_cost","transposition_cost"], Edist.kvParam).join("&")
+           + "&extended=" + $("#extended").is(':checked');
+  };
 
-  function reload_div(id) {
-    $('#' + id).load(make_querystring(id));
-  }
+  Edist.reloadDiv = function (id) {
+    $('#' + id).load(Edist.makeQuerystring(id));
+  };
 
-  function rerender() {
-    jQuery.map(['brew_grid', 'phonetic_results', 'title', 'traceback'],reload_div)
+  Edist.rerender = function () {
+    jQuery.map(['brew_grid', 'phonetic_results', 'title', 'traceback'], Edist.reloadDiv);
 
     var link_text = '<a href="/index/edist?left_string=' 
          + escape($('#left_string').val())
@@ -35,19 +36,66 @@
          + $('#left_string').val()
          + ' vs ' 
          + $('#right_string').val()
-         + ') as edit distance.</a>'
-    $('#other_link').html(link_text)
-    return true
-  }
+         + ') as edit distance.</a>';
+    $('#other_link').html(link_text);
+    return true;
+  };
+
+  Edist.setScores = function (scoreMap) {
+    $.each(scoreMap, function (eltId, score) {
+      $(eltId).val(score);
+    });
+    Edist.rerender();
+  };
 
   $(document).ready(function() {
     var elements = ["left_string", "right_string", "initial_cost", "match_cost",
-                    "insert_cost", "delete_cost", "subst_cost", "transposition_cost" ]
+                    "insert_cost", "delete_cost", "subst_cost", "transposition_cost" ];
     for ( var ii = 0; ii < elements.length; ++ii ) {
-      $("#" + elements[ii]).keyup(rerender)
+      $("#" + elements[ii]).keyup(Edist.rerender);
     }
-    $("#extended").click(rerender)
-  })
+    $("#extended").click(Edist.rerender);
+
+    $("#brew-set-scores-as-edist").click(function () {
+      Edist.setScores({
+        "#initial_cost":         "0.0",
+        "#match_cost":           "0.0",
+        "#insert_cost":          "1.0",
+        "#delete_cost":          "1.0",
+        "#subst_cost":           "2.0",
+        "#transposition_cost":   "2.0"
+    })});
+
+    $("#brew-set-scores-as-edist-plus").click(function () {
+      Edist.setScores({
+        "#initial_cost":         "0.0",
+        "#match_cost":           "0.0",
+        "#insert_cost":          "1.0",
+        "#delete_cost":          "1.0",
+        "#subst_cost":           "1.0",
+        "#transposition_cost":   "1.0"
+    })});
+
+    $("#brew-set-scores-for-abbrev").click(function () {
+      Edist.setScores({
+        "#initial_cost":         "0.0",
+        "#match_cost":           "0.0",
+        "#insert_cost":          "0.1",
+        "#delete_cost":          "5.0",
+        "#subst_cost":           "5.0",
+        "#transposition_cost":   "2.0"
+    })});
+
+    $("#brew-set-scores-for-typos").click(function () {
+      Edist.setScores({
+        "#initial_cost":         "0.0",
+        "#match_cost":           "0.0",
+        "#insert_cost":          "1.0",
+        "#delete_cost":          "1.0",
+        "#subst_cost":           "2.0",
+        "#transposition_cost":   "0.1"
+    })});
+  });
 </script>
 
 

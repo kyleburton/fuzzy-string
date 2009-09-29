@@ -7,8 +7,11 @@
   Delete:       <INPUT ID="delete_cost"  TYPE="text" NAME="delete_cost" VALUE="<%= @delete_cost %>"/>  <BR/>
   Substitute:   <INPUT ID="subst_cost"   TYPE="text" NAME="subst_cost" VALUE="<%= @subst_cost %>"/>  <BR/>
   Transpose:    <INPUT ID="transposition_cost" TYPE="text" NAME="transposition_cost" VALUE="<%= @transposition_cost %>"/>  <BR/>
-<!--
-  Extended:     <INPUT ID="extended"     TYPE="checkbox" NAME="extended" VALUE="true"/>  <BR/>
--->
-  <%= submit_tag "compare" %>
+  <%= submit_tag "Compare" %> <br />
+  <input id="brew-set-scores-as-edist"      value="Set Scores (edist)"       type="button" /> <br />
+  <input id="brew-set-scores-as-edist-plus" value="Set Scores (edist-S/T)"  type="button" /> <br />
+  <input id="brew-set-scores-for-abbrev"    value="Set Scores (abbrev)"      type="button" /> <br />
+  <input id="brew-set-scores-for-typos"     value="Set Scores (typos)"       type="button" />
 <% } -%>
+<script language="text/javascript">
+</script>
