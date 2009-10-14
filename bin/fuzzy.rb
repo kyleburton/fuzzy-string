@@ -77,10 +77,90 @@ module Fuzzy
   end
 
   class BrewCmd
-    # want to be able to supply the score string via a command line parameter...
+    def initialize(*args)
+      if args.size < 2
+        raise "Brew: Error, two words are required for comparison: #$0 left-word right-word [threshold] [scores]"
+      end
+      if args.size > 4
+        raise "Brew: Error, unsupported arguments: #$0 brew left-word right-word [threshold] [scores]"
+      end
+      @left, @right, @thresh, *rest = args
+      @thresh = @thresh.to_f || 0.80
+      @brew_scores = abbrev_scores
+      if rest[0]
+        score_method = "#{rest[0]}_scores"
+        if self.respond_to?(score_method)
+          @brew_scores = self.send(score_method)
+        elsif
+          raise "Brew: Error, unsupported scoring parametes: #{score_method} try one of edist, abbrev, typo"
+        end
+      end
+    end
+
+    def abbrev_scores
+      { :initial   => 0.0,
+        :match     => 0.0,
+        :insert    => 0.1,
+        :delete    => 5.0,
+        :subst     => 5.0,
+        :transpose => 2.0,
+        :extended  => false }
+    end
+
+    def edist_scores
+      { :initial   => 0.0,
+        :match     => 0.0,
+        :insert    => 1.0,
+        :delete    => 1.0,
+        :subst     => 1.0,
+        :transpose => 2.0,
+        :extended  => false }
+    end
+
+    def typo_scores
+      { :initial   => 0.0,
+        :match     => 0.0,
+        :insert    => 1.0,
+        :delete    => 1.0,
+        :subst     => 2.0,
+        :transpose => 0.1,
+        :extended  => false }
+    end
+
+    def run
+      brew = Brew.new
+      print "score table: #{@brew_scores.inspect}"
+      @cost, @matrix = brew.distance(@left.downcase,@right.downcase,
+                                    @brew_scores)
+      avg_len = (@left.size + @right.size) / 2.0
+      score   = (avg_len - @cost) / avg_len
+      @thresh = 0.80 unless @thresh && @thresh > 0.0
+      if @thresh
+        result = score >= @thresh ? 'HIT' : 'MISS'
+        puts "edist(#@left,#@right) = cost:#@cost; score=#{score}/#{@thresh} [#{result}]"
+      else
+        puts "edist(#@left,#@right) = cost:#@cost; score=#{score}"
+      end
+    end
   end
 
   class FindCmd
+    def initialize(*args)
+      @algorithm, *words = args
+      @words = words
+
+      algorithm_method = "#{algorithm}"
+      puts "Checking if can: #{score_method}"
+      if !self.respond_to? algorithm_method
+        raise "Find: Error, unsupported algorithm: #{algorithm_method}"
+      end
+    end
+
+    def run
+      @words.each do |word|
+
+      end
+    end
   end
 
   class Main
@@ -103,21 +183,18 @@ module Fuzzy
       commands.keys.map(&:to_s).sort.join(", ")
     end
 
-    def words_file
-      '/usr/share/dict/words'
-    end
 
-    def print_nysiis(word);    puts "NYSIIS: #{word.nysiis}"; end
-    def print_soundex(word);   puts word.soundex; end
-    def print_metaphone(word); puts word.double_metaphone; end
-
-    def print_edist(left,right)
-      raise "implement this: print_edist"
-    end
-
-    def print_brew(left,right,scores)
-      raise "implement this: print_brew"
-    end
+#    def print_nysiis(word);    puts "NYSIIS: #{word.nysiis}"; end
+#    def print_soundex(word);   puts word.soundex; end
+#    def print_metaphone(word); puts word.double_metaphone; end
+#
+#    def print_edist(left,right)
+#      raise "implement this: print_edist"
+#    end
+#
+#    def print_brew(left,right,scores)
+#      raise "implement this: print_brew"
+#    end
 
     def resolve_command(command)
       sname = command.to_sym
