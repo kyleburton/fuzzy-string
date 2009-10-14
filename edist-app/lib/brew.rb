@@ -169,7 +169,7 @@ class Brew
             left_chars[left_idx]   == right_chars[right_idx-1]
           can_transpose = true
           transpose_cost = matrix[row_idx-2][col_idx-2][:cost] + @cost.transpose
-          puts "TRANSPOSE: #{left_idx}:#{left_ch} vs #{right_idx}:#{right_ch} cost(#{@cost.transpose})=#{transpose_cost}"
+          #puts "TRANSPOSE: #{left_idx}:#{left_ch} vs #{right_idx}:#{right_ch} cost(#{@cost.transpose})=#{transpose_cost}"
         end
 
         ## up means DEL

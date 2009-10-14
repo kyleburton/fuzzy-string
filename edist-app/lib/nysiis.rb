@@ -39,7 +39,9 @@ module Nysiis
     string.gsub! /(\w)\1+/, "#{$1}"
     
     if first =~ /[AEIOU]/
-      string = first + string[1..-1]
+      substr = string[1..-1]
+      substr = '' if substr.nil?
+      string = first + substr
     end
     
     string
