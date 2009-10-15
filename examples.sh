@@ -2,13 +2,13 @@ for name in "De Morgen" "Di Morgen" "D’Morgun" "Demorgyn" "De Murgen" "Dy More
   echo "$(bin/fuzzy.rb meta "$name") $name"
 done
 
-exit 
+exit
 
-# Da Myrgn, Demorgyn => DAGN 
-# Dy Moregan => DNARAGAN 
-# Da Morgan, De Morgen, De Murgen, Di Morgen, Dy Murgan => DNARGAN 
-# D’Morgun => NARGAN 
-# 
+# Da Myrgn, Demorgyn => DAGN
+# Dy Moregan => DNARAGAN
+# Da Morgan, De Morgen, De Murgen, Di Morgen, Dy Murgan => DNARGAN
+# D’Morgun => NARGAN
+#
 # TMRJTMRK   De Morgen, De Murgen, Demorgyn, Di Morgen
 # TMRK       Da Morgan, Dy Moregan, Dy Murgan, D’Morgun
 # TMRNTMRK   Da Myrgn
@@ -39,3 +39,8 @@ bin/fuzzy.rb -b '{:initial=>0,:match=>0,:insert=>1,:delete=>1,:subst=>2,:transpo
 bin/fuzzy.rb -b '{:initial=>0,:match=>0,:insert=>1,:delete=>1,:subst=>2,:transpose=>0.1}' edist burton bruton
 bin/fuzzy.rb -b '{:initial=>0,:match=>0,:insert=>1,:delete=>1,:subst=>2,:transpose=>0.1}' edist harrisburg harrsibugr
 bin/fuzzy.rb -b '{:initial=>0,:match=>0,:insert=>1,:delete=>1,:subst=>2,:transpose=>0.1}' brew harrisburg harrsibugr
+
+bin/fuzzy.rb -f data/lnames.txt -t 0.80 find edist burton
+bin/fuzzy.rb -f data/lnames.txt -t 0.80 find soundex burton
+bin/fuzzy.rb -f data/lnames.txt -t 0.80 find nysiis burton
+bin/fuzzy.rb -f data/lnames.txt -t 0.80 find metaphone burton

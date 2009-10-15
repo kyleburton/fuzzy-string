@@ -1,0 +1,31 @@
+
+h1. Title: A Survey of Fuzzy String Matching Algorithms
+
+h2. Brief
+
+Do you like how Google suggests a fix when you mis-spell (I mean typo) a word?  Did you ever wonder how you could implement a spell checker?
+
+Fuzzy string matching dates back to the 1800s to the US Census Bureau's mandate of not overcounting the US population.  My personal exploration into the record linkage aspect of data integration has touched on several fuzzy string matching algorithms.  Come and hear about how several of these algorithms work and some of the techniques I have used in industry settings with large datasets.
+
+
+h2. This Project
+
+The original slides are in Keynote, with PDF and PPT exports.
+
+There is an interactive Rails application that demonstrates the major algorithms discussed in the talk.  It is  in the <code>edist-app</code> subdirectory.
+
+h3. bin/fuzzy.rb
+
+This command line program supports executing each of the main algorithms discussed in the talk, including a search across <code>/usr/share/dict/words</code> using each of the algorithms (or any file you so choose).
+
+<pre>
+<code>
+Usage: bin/fuzzy.rb [options] command [args]
+    -v, --[no-]verbose               Run verbosely
+    -f, --file=                      File to search for the 'find' command.
+    -q, --quiet                      Run quietly
+    -t, --threshold=                 Threshold (percentage) for Edist and Brew Algorithms.
+    -s, --score-table=               Set the Brew Score table to use (typo, abbrev, edist)
+    -b, --brew-table=                Set the Brew Score table from an expression.  To be valid it must be a hash with the following form: {:initial=>0,:match=>0,:insert=>0.1,:delete=>5,:subst=>5,:transpose=>2}.  Behavior of this program is undefined in the case the table you provide is invalid.
+</code>
+</pre>
