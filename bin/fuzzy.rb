@@ -233,7 +233,8 @@ module Fuzzy
     def resolve_command(command)
       sname = command.to_sym
       candidates = commands.keys.select do |cand|
-        cand.to_s.start_with? sname.to_s
+        #cand.to_s.start_with? sname.to_s
+        0 == cand.to_s.index(sname.to_s)
       end
       candidates.size == 1 ? candidates[0] : sname
     end

@@ -1,6 +1,44 @@
 
 class Edist
 
+  def distancet(left,right,threshold)
+    raise "Error: threshold must be <=1.0 threshold=#{threshold}" if threshold > 1.0
+    return left == right                                          if threshold == 1
+  
+    # threshold is in the range [0,1]
+    # for left to match right, given the threshold
+    # there is a maximum # of edits between the two
+    # strings (or the distance would fall below the 
+    # threshold).  The # of edits tolerated 
+    # is T*len(Ss) where Ss is the shorter string.
+    left,right = right,left         if left.size < right.size
+    max_edits = ((1.0-threshold) * left.size).floor
+    if max_edits < 1
+      puts "Max of #{max_edits} (zero) for '#{left}' vs '#{right}', not bothering to try."
+      return right.size, []
+    end
+    puts "Max of #{max_edits} edits for '#{left}' vs '#{right}'"
+
+    # now that we know that
+    return right.size, []
+  end
+
+  def similarityt(left,right,thresh)
+    left,right   = right,left         if left.size < right.size
+    cost, matrix = distancet(left,right,thresh)
+    avg_len      = (left.size + right.size) / 2.0
+    score        = 1.0 - (avg_len - cost) / avg_len
+    return score
+  end
+
+  def similarity(left,right)
+    left,right   = right,left         if left.size < right.size
+    cost, matrix = distance(left,right)
+    avg_len      = (left.size + right.size) / 2.0
+    score        = 1.0 - (avg_len - cost) / avg_len
+    return score
+  end
+
   def distance(left,right)
     if !left || !right
       return [-1,[]]
@@ -87,6 +125,14 @@ end
 if $0 == __FILE__
   edist = Edist.new
   args = ARGV
-  args = ["kitten","sitting"] unless args.size > 0
-  edist.distance(args[0],args[1])
+  args = ["kitten","sitting","0.80"] unless args.size > 0
+  left, right, thresh = *args
+  thresh = thresh.to_f
+  similarity = edist.similarity(left,right)
+  similarity = edist.similarityt(left,right,thresh)
+  if similarity >= thresh
+    puts "HIT: '#{left}' vs '#{right}' score=#{similarity} >= #{thresh}"
+  else
+    puts "MISS: '#{left}' vs '#{right}' score=#{similarity} < #{thresh}"
+  end
 end
