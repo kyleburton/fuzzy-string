@@ -1,0 +1,10 @@
+LEFT	RIGHT	EDIST_COST	BREW_TABLE	BREW_COST
+Apple	wopple	2	EDIST	2
+Burton	BURTON	0	EDIST	0
+Barton	BURTON	1	EDIST	1
+Bobby	Baby	2	EDIST	2
+Hosp	Hospital	4	EDIST	4
+ST	street	4	EDIST	4
+Hosp	Hospital	4	ABBREVIATIONS	4
+ST	street	4	ABBREVIATIONS	0.3
+Harrisburg	Harrsigubr	0	TYPOS	0.4

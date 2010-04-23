@@ -1,86 +1,65 @@
 # text brew, adapted from Perl implementation Text::Brew module :
 # http://search.cpan.org/~kcivey/Text-Brew-0.02/lib/Text/Brew.pm
 
-class Cost
+module TextBrew
+  class Cost
+    attr_accessor :initial, :match, :insert, :delete, :subst, :extended, :transpose
 
-  def initialize(initial,match,insert,delete,subst,transpose,extended)
-    @initial   = initial || 0.0
-    @match     = match  || 0.0
-    @insert    = insert || 1.0
-    @delete    = delete || 1.0
-    @subst     = subst  || 2.0
-    @transpose = transpose || 2.0
-    @extended = extended || false
+    def self.new_from_map(params={})
+      cost = Cost.new
+      cost.instance_eval do
+        @initial   = params[:initial]   || params[:b] || 0.0      # b:eginning
+        @match     = params[:match]     || params[:m] || 0.0      # m:atch
+        @insert    = params[:insert]    || params[:i] || 1.0      # i:nsert
+        @delete    = params[:delete]    || params[:d] || 1.0      # d:elete
+        @subst     = params[:subst]     || params[:s] || 2.0      # s:ubst
+        @transpose = params[:transpose] || params[:t] || 2.0      # t:ranspose
+        @extended  = params[:extended]  || params[:e] || false    # e:xtended
+      end
+      cost
+    end
+
+    def initialize(*args)
+      initial,match,insert,delete,subst,transpose,extended = args
+      @initial   = initial || 0.0
+      @match     = match  || 0.0
+      @insert    = insert || 1.0
+      @delete    = delete || 1.0
+      @subst     = subst  || 2.0
+      @transpose = transpose || 2.0
+      @extended  = extended || false
+    end
+
+    def max
+      [@initial,
+       @match,
+       @insert,
+       @delete,
+       @subst,
+       @transpose].max
+    end
+
+    def to_s
+      "Cost{#{self.hash}}(initial=#{@initial};match=#{@match};insert=#{@insert};delete=#{@delete};subst=#{@subst};transpose=#{@transpose})"
+    end
+
+    def to_m
+      {
+        :initial   => @initial,
+        :match     => @match,
+        :insert    => @insert,
+        :delete    => @delete,
+        :subst     => @subst,
+        :transpose => @transpose,
+        :extended  => @extended
+      }
+    end
+
+    EDIST         = Cost.new_from_map(:b => 0.0, :m => 0.0, :i => 1.0, :d=> 1.0, :s => 1.0, :t => 2.0, :e => false)
+    ABBREVIATIONS = Cost.new_from_map(:b => 0.0, :m => 0.0, :i => 0.1, :d=> 5.0, :s => 5.0, :t => 2.0, :e => false)
+    TYPOS         = Cost.new_from_map(:b => 0.0, :m => 0.0, :i => 1.0, :d=> 1.0, :s => 1.0, :t => 0.1, :e => false)
+
   end
-
-  def max
-    [@initial,
-     @match,
-     @insert,
-     @delete,
-     @subst].max
-  end
-
-  def initial
-    @initial
-  end
-
-  def initial=(val)
-    @initial=val
-  end
-
-  def match
-    @match
-  end
-
-  def match=(val)
-    @match=val
-  end
-
-  def insert
-    @insert
-  end
-
-  def insert=(val)
-    @insert = val
-  end
-
-  def delete
-    @delete
-  end
-
-  def delete=(val)
-    @delete = val
-  end
-
-  def subst
-    @subst
-  end
-
-  def subst=(val)
-    @subst = val
-  end
-
-  def extended
-    @extended
-  end
-
-  def extended=(val)
-    @extended = val
-  end
-
-  def transpose
-    @transpose
-  end
-
-  def transpose=(val)
-    @transpose = val
-  end
-
-  def to_s
-    "Cost{#{self.hash}}(initial=#{@initial};match=#{@match};insert=#{@insert};delete=#{@delete};subst=#{@subst};transpose=#{@transpose})"
-  end
-
 end
 
 class Brew
@@ -104,7 +83,7 @@ class Brew
   # support providing access to the internal matrix
   #
   def distance(left,right,cost_config={})
-    @cost = Cost.new(cost_config[:initial],cost_config[:match], cost_config[:insert],
+    @cost = TextBrew::Cost.new(cost_config[:initial],cost_config[:match], cost_config[:insert],
                      cost_config[:delete], cost_config[:subst], cost_config[:transpose],
                      cost_config[:extended])
     @left = left
@@ -379,7 +358,7 @@ if false
   brew.distance(left, right, :initial => 0.0, :insert=>0.1, :delete => 15.0, :match => 0.0, :subst => 1)
 end
 
-if true
+if false
   kbd = KeyboardDistance.new
   [ [ "Kyle Burton", "Khle Vurtin" ], # a few chars offset by 1
     [ "apple", "sookr" ],             # all chars offset by 1
