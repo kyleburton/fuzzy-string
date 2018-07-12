@@ -1,0 +1,2 @@
+(compile -shared -I../include/c -L../target -lbrew brew.scm)
+(install-extension 'brew "brew.so")

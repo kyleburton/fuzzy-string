@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# set -x
+
+export LD_LIBRARY_PATH=$PWD/target:$PWD/src/chicken
+
+function install-extension () {
+  local extension="$1"
+
+  if ! command csi -e "(require '$extension) (exit 0)"  >/dev/null 2>&1; then
+    chicken-install $extension
+  fi
+
+  return 0
+}
+
+bake_task build "Build the shared library"
+function build () {
+  test -d target || mkdir target
+
+  if [[ Linux == $(uname) ]]; then
+    for csrc in src/c/*.c; do
+      local oname="src/c/$(basename $csrc .c).o"
+      gcc -c -Wall -Werror -std=c99 -Iinclude/c -fPIC -o "$oname" "$csrc"
+    done
+    gcc -shared -o target/libbrew.so src/c/*.o
+  fi
+
+  if [[ Darwin == $(uname) ]]; then
+    bake_echo_red "implement me"
+	  ld -dylib src/c/*.o -o target/libbrew.dylib -lc
+  fi
+
+  install-extension easyffi
+  install-extension foreigners
+
+  (
+  cd brew
+  chicken-install
+  )
+}
+
+
+bake_task csi "Run csi with the test code loaded"
+function csi () {
+  export LD_LIBRARY_PATH=$PWD/target:$PWD/src/chicken
+  # command csi -I src/chicken -q "$@"
+  command csi  -q "$@"
+}
+
+bake_task run-test "Run the tets"
+function run-test () {
+  csi test/src/chicken/test.scm  -e '(execute-tests)'
+}
+
+bake_task clean "Clean"
+function clean () {
+  rm target/*.so src/chicken/*.so src/c/*.o
+}

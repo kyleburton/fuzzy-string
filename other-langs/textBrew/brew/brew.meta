@@ -1,0 +1,4 @@
+((author "Kyle Burton <kyle.burton@gmail.com>")
+ (synopsis "Text brew wrapper")
+ (license "No License")
+ (files "brew.scm" "brew.setup"))
