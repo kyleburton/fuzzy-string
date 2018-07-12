@@ -1,3 +1,5 @@
+# Overview
+
 This is a C implementation of the Brew algorithm.  This is derived from the
 Java implementation in hmsCommon/util, which in turn was derived from the Perl
 module Text::Brew.
@@ -5,17 +7,11 @@ module Text::Brew.
  http://www.ling.ohio-state.edu/~cbrew/795M/string-distance.html
  http://search.cpan.org/dist/Text-Brew/
 
-To build/test, run:
+To build/test, using bake run:
 
-  make
-
-To run the unit tests, do the following:
-
-  LD_LIBRARY_PATH=target target/test
-
-To execute the test with the Valgrind memory checker, do the following:
-
-  make valgrind-test
+```
+$ bake build && bake run
+```
 
 
 20060620: Interestingly enough after creating the initial
